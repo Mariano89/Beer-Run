@@ -7,7 +7,7 @@ if (Meteor.isClient) {
 
         function preload() {
 
-            game.load.image('sky', '../images/sky.png');
+            game.load.image('sky', '../images/citybackground.png');
             game.load.image('ground', '../images/platform.png');
             game.load.image('beer', '../images/beer.png');
             game.load.spritesheet('dude', '../images/dude.png', 32, 48);
@@ -28,8 +28,8 @@ if (Meteor.isClient) {
             game.physics.startSystem(Phaser.Physics.NINJA);
 
             //  A simple background for our game
-            var sky = game.add.sprite(0, 0, 'sky');
-            sky.scale.setTo(6, 1);
+            var sky = game.add.sprite(0, -27, 'sky');
+            sky.scale.setTo(2, 1.6);
 
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
@@ -47,11 +47,7 @@ if (Meteor.isClient) {
             //  This stops it from falling away when you jump on it
             ground.body.immovable = true;
 
-            //  Now let's create two ledges
-            var ledge = platforms.create(400, 510, 'ground');
-            ledge.scale.setTo(0.5, 1);
-            ledge.body.immovable = true;
-
+            //  Now let's create ledges
             ledge = platforms.create(-150, 250, 'ground');
             ledge.body.immovable = true;
 
@@ -77,10 +73,10 @@ if (Meteor.isClient) {
             beers.enableBody = true;
 
             //  Here we'll create 12 of them evenly spaced apart
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 12; i++)
             {
                 //  Create a beer inside of the 'beers' group
-                var beer = beers.create(i * 10, 0, 'beer');
+                var beer = beers.create(i * 80, 1, 'beer');
 
                 //  Let gravity do its thing
                 beer.body.gravity.y = 300;
