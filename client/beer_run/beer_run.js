@@ -141,7 +141,7 @@ if (Meteor.isClient) {
             beer.kill();
 
             //  Add and update the score
-            score += 10;
+            score += 1;
             scoreText.text = 'Blood Alcohol Level: ' + score;
 
         }
