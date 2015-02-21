@@ -28,7 +28,9 @@ if (Meteor.isClient) {
             game.physics.startSystem(Phaser.Physics.NINJA);
 
             //  A simple background for our game
-            game.add.sprite(0, 0, 'sky');
+            var sky = game.add.sprite(0, 0, 'sky');
+            sky.scale.setTo(6, 1);
+
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
             platforms = game.add.group();
@@ -46,7 +48,8 @@ if (Meteor.isClient) {
             ground.body.immovable = true;
 
             //  Now let's create two ledges
-            var ledge = platforms.create(400, 400, 'ground');
+            var ledge = platforms.create(400, 510, 'ground');
+            ledge.scale.setTo(0.5, 1);
             ledge.body.immovable = true;
 
             ledge = platforms.create(-150, 250, 'ground');
@@ -59,8 +62,8 @@ if (Meteor.isClient) {
             game.physics.arcade.enable(player);
 
             //  Player physics properties. Give the little guy a slight bounce.
-            player.body.bounce.y = 0;
-            player.body.gravity.y = 700;
+            player.body.bounce.y = 0.2;
+            player.body.gravity.y = 750;
             player.body.collideWorldBounds = true;
 
             //  Our two animations, walking left and right.
@@ -131,7 +134,7 @@ if (Meteor.isClient) {
             //  Allow the player to jump if they are touching the ground.
             if (cursors.up.isDown && player.body.touching.down)
             {
-                player.body.velocity.y = - 100;
+                player.body.velocity.y = - 350;
             }
 
         }
@@ -146,7 +149,6 @@ if (Meteor.isClient) {
             scoreText.text = 'Blood Alcohol Level: ' + score;
 
         }
-
 
                 // END OF PHASER-METEOR
    }
