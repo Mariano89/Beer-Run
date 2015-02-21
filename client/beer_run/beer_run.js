@@ -73,16 +73,21 @@ if (Meteor.isClient) {
             beers.enableBody = true;
 
             //  Here we'll create 12 of them evenly spaced apart
-            for (var i = 0; i < 12; i++)
+            for (var i = 0; i < 100; i++)
             {
                 //  Create a beer inside of the 'beers' group
-                var beer = beers.create(i * 80, 1, 'beer');
+                var beer = beers.create(i * 30, 450, 'beer');
 
-                //  Let gravity do its thing
-                beer.body.gravity.y = 300;
+                // //  Let gravity do its thing
+                // beer.body.gravity.y = 300;
 
-                //  This just gives each beer a slightly random bounce value
-                beer.body.bounce.y = 0.7 + Math.random() * 0.2;
+                // //  This just gives each beer a slightly random bounce value
+                // beer.body.bounce.y = 0.7 + Math.random() * 0.2;
+            }
+
+            for (var i = 0; i < 20; i++)
+            {
+                var beer = beers.create(i * 60 + i, 400, 'beer');
             }
 
             //  The score
