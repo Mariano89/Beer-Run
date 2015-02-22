@@ -52,11 +52,11 @@ if (Meteor.isClient) {
             ground.body.immovable = true;
 
             //  Now let's create ledges
-            ledge = platforms.create(-150, 250, 'ground');
-            ledge.body.immovable = true;
+            // ledge = platforms.create(-150, 250, 'ground');
+            // ledge.body.immovable = true;
 
             // The player and its settings
-            player = game.add.sprite(1, game.world.height - 110, 'dude');
+            player = game.add.sprite(300, game.world.height - 110, 'dude');
 
             //  We need to enable physics on the player
             game.physics.arcade.enable(player);
@@ -72,6 +72,9 @@ if (Meteor.isClient) {
 
             //  Finally some beers to collect
             beers = game.add.group();
+            // beers = game.add.beers(0, -27, 27, 27, 'beer');
+            // beers.autoScroll(-80, 0);
+            // beers.scale.setTo(2, 1.6);
 
             //  We will enable physics for any beer that is created in this group
             beers.enableBody = true;
@@ -114,29 +117,31 @@ if (Meteor.isClient) {
             game.physics.arcade.overlap(player, beers, collectBeer, null, this);
 
             //  Reset the players velocity (movement)
-            player.body.velocity.x = 0;
 
-            if (cursors.left.isDown)
-            {
-                //  Move to the left
-                player.body.velocity.x = -150;
+            player.animations.play('right');
+            // if (cursors.left.isDown)
+            // {
+            //     //  Move to the left
+            //     player.body.velocity.x = -150;
 
-                player.animations.play('left');
-            }
-            else if (cursors.right.isDown)
-            {
-                //  Move to the right
-                player.body.velocity.x = 150;
+            //     player.animations.play('left');
+            // }
+            // else if (cursors.right.isDown)
+            // {
+            //     //  Move to the right
+            //     player.body.velocity.x = 150;
 
-                player.animations.play('right');
-            }
-            else
-            {
-                //  Stand still
-                player.animations.stop();
+            //     player.animations.play('right');
+            // }
+            // else
+            // {
+            //     player.body.velocity.x = 100;
+                
+            //     // //  Stand still
+            //     // player.animations.stop();
 
-                player.frame = 4;
-            }
+            //     // player.frame = 4;
+            // }
             
             //  Allow the player to jump if they are touching the ground.
             if (cursors.up.isDown && player.body.touching.down)
