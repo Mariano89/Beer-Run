@@ -29,12 +29,13 @@ if (Meteor.isClient) {
 
             //  A simple background for our game
             var sky = game.add.sprite(0, -27, 'sky');
+            sky.scale.setTo(2, 1.6);
+
+            // Auto scroll
             var tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
             sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
             sky.autoScroll(-100, 0);
-            sky.scale.setTo(2, 1.6);
-
-
+            
             //  The platforms group contains the ground and the 2 ledges we can jump on
             platforms = game.add.group();
 
