@@ -29,6 +29,9 @@ if (Meteor.isClient) {
 
             //  A simple background for our game
             var sky = game.add.sprite(0, -27, 'sky');
+            var tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
+            sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
+            sky.autoScroll(-100, 0);
             sky.scale.setTo(2, 1.6);
 
 
