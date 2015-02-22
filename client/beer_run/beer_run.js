@@ -87,7 +87,7 @@ if (Meteor.isClient) {
 
             for (var i = 0; i < 20; i++)
             {
-                var beer = beers.create(i * 60 + i, 400, 'beer');
+                var beer = beers.create(i * 60, 400, 'beer');
             }
 
             //  The score
@@ -95,6 +95,8 @@ if (Meteor.isClient) {
 
             //  Our controls.
             cursors = game.input.keyboard.createCursorKeys();
+            space = game.input.keyboard.addKey(32);
+            shift = game.input.keyboard.addKey(16);
             
         }
 
