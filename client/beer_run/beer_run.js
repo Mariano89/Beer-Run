@@ -52,8 +52,12 @@ if (Meteor.isClient) {
             ground.body.immovable = true;
 
             //  Now let's create ledges
-            // ledge = platforms.create(-150, 250, 'ground');
-            // ledge.body.immovable = true;
+            
+            ledge = platforms.create(150, 250, 'ground');
+            ledge.body.immovable = true;
+            ledge.body.velocity.x = -160;
+            ledge.checkWorldBounds = true;
+            ledge.outOfBoundsKill = true;
 
             // The player and its settings
             player = game.add.sprite(300, game.world.height - 110, 'dude');
