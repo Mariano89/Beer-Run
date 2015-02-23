@@ -94,12 +94,21 @@ if (Meteor.isClient) {
 
                 // //  This just gives each beer a slightly random bounce value
                 // beer.body.bounce.y = 0.7 + Math.random() * 0.2;
+
+                beer.body.velocity.x = -160;
+                beer.checkWorldBounds = true;
+                beer.outOfBoundsKill = true;
+                
             }
 
             for (var i = 0; i < 20; i++)
             {
                 var beer = beers.create(i * 60, 400, 'beer');
+                beer.body.velocity.x = -160;
+                beer.checkWorldBounds = true;
+                beer.outOfBoundsKill = true;
             }
+
 
             //  The score
             scoreText = game.add.text(16, 16, 'Blood Alcohol Level: 0', { fontSize: '32px', fill: '#000' });
