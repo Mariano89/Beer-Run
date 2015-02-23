@@ -57,7 +57,7 @@ if (Meteor.isClient) {
             ledge.body.immovable = true;
             ledge.body.velocity.x = -160;
             ledge.checkWorldBounds = true;
-            ledge.outOfBoundsKill = true;
+            ledge.outOfBoundsDestroy = true;
 
             // The player and its settings
             player = game.add.sprite(300, game.world.height - 110, 'dude');
@@ -97,16 +97,16 @@ if (Meteor.isClient) {
 
                 beer.body.velocity.x = -160;
                 beer.checkWorldBounds = true;
-                beer.outOfBoundsKill = true;
+                beer.outOfBoundsDestroy = true;
                 
             }
 
-            for (var i = 0; i < 20; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var beer = beers.create(i * 60, 400, 'beer');
                 beer.body.velocity.x = -160;
                 beer.checkWorldBounds = true;
-                beer.outOfBoundsKill = true;
+                beer.outOfBoundsDestroy = true;
             }
 
 
@@ -167,7 +167,7 @@ if (Meteor.isClient) {
         function collectBeer (player, beer) {
             
             // Removes the beer from the screen
-            beer.kill();
+            beer.destroy();
 
             //  Add and update the score
             score += 1;
