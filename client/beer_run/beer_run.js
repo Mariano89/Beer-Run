@@ -11,7 +11,7 @@ if (Meteor.isClient) {
             game.load.image('ground', '../images/platform.png');
             game.load.image('beer', '../images/beer.png');
             game.load.image('keg', '../images/keg.png');
-            game.load.spritesheet('dude', '../images/dude.png', 32, 48);
+            game.load.spritesheet('dude', '../images/dude.png', 45, 62);
 
         }
 
@@ -34,7 +34,7 @@ if (Meteor.isClient) {
             // Auto scroll
             var tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
             sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
-            sky.autoScroll(-100, 0);
+            sky.autoScroll(-200, 0);
             sky.scale.setTo(2, 1.6);
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
@@ -56,12 +56,12 @@ if (Meteor.isClient) {
             
             ledge = platforms.create(150, 250, 'ground');
             ledge.body.immovable = true;
-            ledge.body.velocity.x = -200;
+            ledge.body.velocity.x = -400;
             ledge.checkWorldBounds = true;
             ledge.outOfBoundsDestroy = true;
 
             // The player and its settings
-            player = game.add.sprite(300, game.world.height - 110, 'dude');
+            player = game.add.sprite(300, game.world.height - 220, 'dude');
 
             //  We need to enable physics on the player
             game.physics.arcade.enable(player);
@@ -72,8 +72,8 @@ if (Meteor.isClient) {
             player.body.collideWorldBounds = true;
 
             //  Our two animations, walking left and right.
-            player.animations.add('left', [0, 1, 2, 3], 10, true);
-            player.animations.add('right', [5, 6, 7, 8], 10, true);
+            // player.animations.add('left', [0, 1, 2, 3], 10, true );
+            player.animations.add('right', [0, 1, 2, 3], 10, true);
 
             //  Finally some beers to collect
             beers = game.add.group();
@@ -96,7 +96,7 @@ if (Meteor.isClient) {
                 // //  This just gives each beer a slightly random bounce value
                 // beer.body.bounce.y = 0.7 + Math.random() * 0.2;
 
-                beer.body.velocity.x = -200;
+                beer.body.velocity.x = -400;
                 beer.checkWorldBounds = true;
                 beer.outOfBoundsDestroy = true;
                 
@@ -105,7 +105,7 @@ if (Meteor.isClient) {
             for (var i = 0; i < 100; i++)
             {
                 var beer = beers.create(i * 60, 400, 'beer');
-                beer.body.velocity.x = -200;
+                beer.body.velocity.x = -400;
                 beer.checkWorldBounds = true;
                 beer.outOfBoundsDestroy = true;
             }
@@ -116,7 +116,7 @@ if (Meteor.isClient) {
             for (var i = 0; i < 10; i++)
             {
                 var keg = kegs.create(i * 100, 300, 'keg');
-                keg.body.velocity.x = -200;
+                keg.body.velocity.x = -400;
                 keg.checkWorldBounds = true;
                 keg.outOfBoundsDestroy = true;
             }
@@ -173,6 +173,7 @@ if (Meteor.isClient) {
             //  Allow the player to jump if they are touching the ground.
             if (space.isDown && player.body.touching.down)
             {
+
                 player.body.velocity.y = -415;
             }
 
