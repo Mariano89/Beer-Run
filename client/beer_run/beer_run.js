@@ -60,6 +60,12 @@ if (Meteor.isClient) {
             ledge.checkWorldBounds = true;
             ledge.outOfBoundsDestroy = true;
 
+            // ledge1 = platforms.create(1150, 470, 'ground');
+            // ledge1.body.immovable = true;
+            // ledge1.body.velocity.x = -400;
+            // ledge1.checkWorldBounds = true;
+            // ledge1.outOfBoundsDestroy = true;
+
             // The player and its settings
             player = game.add.sprite(300, game.world.height - 220, 'dude');
 
@@ -73,7 +79,7 @@ if (Meteor.isClient) {
 
             //  Our two animations, walking left and right.
             player.animations.add('jump', [1], 10, true );
-            player.animations.add('right', [0, 1, 2, 3], 10, true);
+            player.animations.add('right', [0, 1, 2, 3], 8, true);
 
             //  Finally some beers to collect
             beers = game.add.group();
