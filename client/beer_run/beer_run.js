@@ -67,12 +67,12 @@ if (Meteor.isClient) {
             game.physics.arcade.enable(player);
 
             //  Player physics properties. Give the little guy a slight bounce.
-            player.body.bounce.y = 0.2;
+            // player.body.bounce.y = 0.2;
             player.body.gravity.y = 750;
             player.body.collideWorldBounds = true;
 
             //  Our two animations, walking left and right.
-            // player.animations.add('left', [0, 1, 2, 3], 10, true );
+            player.animations.add('jump', [1], 10, true );
             player.animations.add('right', [0, 1, 2, 3], 10, true);
 
             //  Finally some beers to collect
@@ -145,7 +145,7 @@ if (Meteor.isClient) {
 
             //  Reset the players velocity (movement)
 
-            player.animations.play('right');
+            // player.animations.play('right');
             // if (cursors.left.isDown)
             // {
             //     //  Move to the left
@@ -173,8 +173,13 @@ if (Meteor.isClient) {
             //  Allow the player to jump if they are touching the ground.
             if (space.isDown && player.body.touching.down)
             {
-
                 player.body.velocity.y = -415;
+            }
+            else if(player.body.touching.down == false){
+                player.animations.play('jump');
+            }
+            else{
+                player.animations.play('right');
             }
 
         }
