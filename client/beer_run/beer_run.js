@@ -10,6 +10,7 @@ if (Meteor.isClient) {
             game.load.image('sky', '../images/citybackground.png');
             game.load.image('ground', '../images/platform.png');
             game.load.image('beer', '../images/beer.png');
+            game.load.image('keg', '../images/keg.png');
             game.load.spritesheet('dude', '../images/dude.png', 32, 48);
 
         }
@@ -109,9 +110,20 @@ if (Meteor.isClient) {
                 beer.outOfBoundsDestroy = true;
             }
 
+            kegs = game.add.group();
+            kegs.enableBody = true;
+
+            for (var i = 0; i < 10; i++)
+            {
+                var keg = kegs.create(i * 100, 300, 'keg');
+                keg.body.velocity.x = -200;
+                keg.checkWorldBounds = true;
+                keg.outOfBoundsDestroy = true;
+            }
+
 
             //  The score
-            scoreText = game.add.text(16, 16, 'Blood Alcohol Level: 0', { fontSize: '32px', fill: '#000' });
+            scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
             //  Our controls.
             cursors = game.input.keyboard.createCursorKeys();
@@ -125,9 +137,11 @@ if (Meteor.isClient) {
             //  Collide the player and the beers with the platforms
             game.physics.arcade.collide(player, platforms);
             game.physics.arcade.collide(beers, platforms);
+            game.physics.arcade.collide(kegs, platforms);
 
             //  Checks to see if the player overlaps with any of the beers, if he does call the collectBeer function
             game.physics.arcade.overlap(player, beers, collectBeer, null, this);
+            game.physics.arcade.overlap(player, kegs, collectKeg, null, this);
 
             //  Reset the players velocity (movement)
 
@@ -171,8 +185,16 @@ if (Meteor.isClient) {
 
             //  Add and update the score
             score += 1;
-            scoreText.text = 'Blood Alcohol Level: ' + score;
+            scoreText.text = 'Score: ' + score;
+        }
 
+        function collectKeg (player, keg) {
+            // Removes the beer from the screen
+            keg.destroy();
+
+            //  Add and update the score
+            score += 10;
+            scoreText.text = 'Score: ' + score;
         }
 
                 // END OF PHASER-METEOR
