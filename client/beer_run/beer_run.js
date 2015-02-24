@@ -11,6 +11,7 @@ if (Meteor.isClient) {
             game.load.image('ground', '../images/platform.png');
             game.load.image('beer', '../images/beer.png');
             game.load.image('keg', '../images/keg.png');
+            game.load.image('heart', '../images/heart.png');
             game.load.spritesheet('dude', '../images/dude.png', 45, 62);
 
         }
@@ -20,6 +21,7 @@ if (Meteor.isClient) {
         var cursors;
 
         var beers;
+        var heart;
         var score = 0;
         var scoreText;
 
@@ -129,7 +131,10 @@ if (Meteor.isClient) {
 
 
             //  The score
-            scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+            scoreText = game.add.text(1050, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+
+            // Player lives
+            heart = game.add.sprite(16, 16, 'heart');
 
             //  Our controls.
             cursors = game.input.keyboard.createCursorKeys();
