@@ -38,8 +38,8 @@ if (Meteor.isClient) {
             // Auto scroll
             var tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
             sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
-            sky.autoScroll(-200, 0);
-            sky.scale.setTo(2, 1.6);
+            sky.autoScroll(-100, 0);
+            sky.scale.setTo(2, 2);
 
             //  The platforms group contains the ground and the 2 ledges we can jump on
             platforms = game.add.group();
@@ -56,16 +56,16 @@ if (Meteor.isClient) {
             // //  This stops it from falling away when you jump on it
             // ground.body.immovable = true;
 
-            //  Now let's create ledges
-            
-                ledge = platforms.create(500, game.world.height - 64, 'ground');
-                ledge.scale.setTo(1, 5);
-                ledge.body.immovable = true;
-                ledge.body.velocity.x = -400;
-                ledge.checkWorldBounds = true;
-                ledge.outOfBoundsDestroy = true;
+            // The first ledge we are using
+            ledge = platforms.create(500, game.world.height - 64, 'ground');
+            ledge.scale.setTo(1, 5);
+            ledge.body.immovable = true;
+            ledge.body.velocity.x = -400;
+            ledge.checkWorldBounds = true;
+            ledge.outOfBoundsDestroy = true;
 
-            for(var i = 0; i < 20; i++) {
+            // Taller and shorter ledges
+            for(var i = 0; i < 50; i++) {
                 ledge1 = platforms.create(600 * i, game.world.height - 64, 'ground');
                 ledge1.scale.setTo(1, 5);
                 ledge1.body.immovable = true;
@@ -80,11 +80,6 @@ if (Meteor.isClient) {
                 ledge2.checkWorldBounds = true;
                 ledge2.outOfBoundsDestroy = true;
             }
-            // ledge1 = platforms.create(1150, 470, 'ground');
-            // ledge1.body.immovable = true;
-            // ledge1.body.velocity.x = -400;
-            // ledge1.checkWorldBounds = true;
-            // ledge1.outOfBoundsDestroy = true;
 
             // The player and its settings
             player = game.add.sprite(300, game.world.height - 220, 'dude');
@@ -107,6 +102,7 @@ if (Meteor.isClient) {
             game.physics.arcade.enable(enemy);
             enemy.body.gravity.y = 750;
             enemy.body.velocity.x = -150;
+
             // enemy.checkWorldBounds = true;
             enemy.outOfBoundsKill = true;
             enemy.body.collideWorldBounds = false;
@@ -225,6 +221,6 @@ if (Meteor.isClient) {
             scoreText.text = 'Score: ' + score;
         }
 
-                // END OF PHASER-METEOR
+        // END OF PHASER-METEOR
    }
 }
