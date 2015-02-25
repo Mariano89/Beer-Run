@@ -47,23 +47,33 @@ if (Meteor.isClient) {
             //  We will enable physics for any object that is created in this group
             platforms.enableBody = true;
 
-            // Here we create the ground.
-            var ground = platforms.create(0, game.world.height - 64, 'ground');
+            // // Here we create the ground.
+            // var ground = platforms.create(0, game.world.height - 64, 'ground');
 
-            //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            ground.scale.setTo(6, 2);
+            // //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+            // ground.scale.setTo(6, 2);
 
-            //  This stops it from falling away when you jump on it
-            ground.body.immovable = true;
+            // //  This stops it from falling away when you jump on it
+            // ground.body.immovable = true;
 
             //  Now let's create ledges
             
-            ledge = platforms.create(150, 250, 'ground');
-            ledge.body.immovable = true;
-            ledge.body.velocity.x = -400;
-            ledge.checkWorldBounds = true;
-            ledge.outOfBoundsDestroy = true;
+            // for(var i = 0; i < 5; i++) {
+            //     ledge = platforms.create(400 * i, game.world.height - 64, 'ground');
+            //     ledge.body.immovable = true;
+            //     ledge.body.velocity.x = -400;
+            //     ledge.checkWorldBounds = true;
+            //     ledge.outOfBoundsDestroy = true;
+            // }
 
+            for(var i = 1; i < 20; i++) {
+                ledge = platforms.create(500 * i, game.world.height - 100, 'ground');
+                ledge.scale.setTo(1, 5);
+                ledge.body.immovable = true;
+                ledge.body.velocity.x = -400;
+                ledge.checkWorldBounds = true;
+                ledge.outOfBoundsDestroy = true;
+            }
             // ledge1 = platforms.create(1150, 470, 'ground');
             // ledge1.body.immovable = true;
             // ledge1.body.velocity.x = -400;
@@ -79,7 +89,8 @@ if (Meteor.isClient) {
             //  Player physics properties. Give the little guy a slight bounce.
             // player.body.bounce.y = 0.2;
             player.body.gravity.y = 750;
-            player.body.collideWorldBounds = true;
+            player.body.collideWorldBounds = false;
+            player.body.outofBoundsKill = true;
 
             //  Our two animations, walking left and right.
             player.animations.add('jump', [1], 10, true );
@@ -91,8 +102,8 @@ if (Meteor.isClient) {
             enemy.body.gravity.y = 750;
             enemy.body.velocity.x = -150;
             // enemy.checkWorldBounds = true;
-            // enemy.outOfBoundsDestroy = true;
-            enemy.body.collideWorldBounds = true;
+            enemy.outOfBoundsKill = true;
+            enemy.body.collideWorldBounds = false;
             enemy.animations.add('left', [0, 1], 8, true);
             enemy.animations.play('left');
             
@@ -160,8 +171,9 @@ if (Meteor.isClient) {
         function update() {
 
             //  Collide the player and the beers with the platforms
-            game.physics.arcade.collide(player, platforms);
             game.physics.arcade.collide(player, enemy);
+            game.physics.arcade.collide(player, platforms);
+            
             game.physics.arcade.collide(enemy, platforms);
             game.physics.arcade.collide(beers, platforms);
             game.physics.arcade.collide(kegs, platforms);
@@ -170,33 +182,9 @@ if (Meteor.isClient) {
             game.physics.arcade.overlap(player, beers, collectBeer, null, this);
             game.physics.arcade.overlap(player, kegs, collectKeg, null, this);
 
-            //  Reset the players velocity (movement)
+            //  Player moves to the right;
+            player.body.velocity.x = 400;
 
-            // player.animations.play('right');
-            // if (cursors.left.isDown)
-            // {
-            //     //  Move to the left
-            //     player.body.velocity.x = -150;
-
-            //     player.animations.play('left');
-            // }
-            // else if (cursors.right.isDown)
-            // {
-            //     //  Move to the right
-            //     player.body.velocity.x = 150;
-
-            //     player.animations.play('right');
-            // }
-            // else
-            // {
-            //     player.body.velocity.x = 100;
-                
-            //     // //  Stand still
-            //     // player.animations.stop();
-
-            //     // player.frame = 4;
-            // }
-            
             //  Allow the player to jump if they are touching the ground.
             if (space.isDown && player.body.touching.down)
             {
@@ -204,6 +192,7 @@ if (Meteor.isClient) {
             }
             else if(player.body.touching.down == false){
                 player.animations.play('jump');
+                player.body.velocity.x = 0;
             }
             else{
                 player.animations.play('right');
