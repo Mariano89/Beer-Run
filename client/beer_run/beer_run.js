@@ -66,13 +66,20 @@ if (Meteor.isClient) {
             //     ledge.outOfBoundsDestroy = true;
             // }
 
-            for(var i = 1; i < 20; i++) {
-                ledge = platforms.create(500 * i, game.world.height - 100, 'ground');
+            for(var i = 0; i < 20; i++) {
+                ledge = platforms.create(600 * i, game.world.height - 100, 'ground');
                 ledge.scale.setTo(1, 5);
                 ledge.body.immovable = true;
                 ledge.body.velocity.x = -400;
                 ledge.checkWorldBounds = true;
                 ledge.outOfBoundsDestroy = true;
+
+                ledge2 = platforms.create(1200 * i, game.world.height - 150, 'ground');
+                ledge2.scale.setTo(1, 5);
+                ledge2.body.immovable = true;
+                ledge2.body.velocity.x = -400;
+                ledge2.checkWorldBounds = true;
+                ledge2.outOfBoundsDestroy = true;
             }
             // ledge1 = platforms.create(1150, 470, 'ground');
             // ledge1.body.immovable = true;
