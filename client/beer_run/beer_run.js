@@ -90,9 +90,13 @@ if (Meteor.isClient) {
             game.physics.arcade.enable(enemy);
             enemy.body.gravity.y = 750;
             enemy.body.velocity.x = -150;
+            // enemy.checkWorldBounds = true;
+            // enemy.outOfBoundsDestroy = true;
             enemy.body.collideWorldBounds = true;
             enemy.animations.add('left', [0, 1], 8, true);
             enemy.animations.play('left');
+            
+
             //  Finally some beers to collect
             beers = game.add.group();
             // beers = game.add.beers(0, -27, 27, 27, 'beer');
