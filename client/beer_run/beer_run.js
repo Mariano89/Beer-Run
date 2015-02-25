@@ -13,10 +13,12 @@ if (Meteor.isClient) {
             game.load.image('keg', '../images/keg.png');
             game.load.image('heart', '../images/heart.png');
             game.load.spritesheet('dude', '../images/dude.png', 45, 62);
+            game.load.spritesheet('baddie', '../images/baddie.png', 32, 32);
 
         }
 
         var player;
+        var enemy;
         var platforms;
         var cursors;
 
@@ -83,6 +85,14 @@ if (Meteor.isClient) {
             player.animations.add('jump', [1], 10, true );
             player.animations.add('right', [0, 1, 2, 3], 8, true);
 
+            // enemy enters
+            enemy = game.add.sprite(600, game.world.height - 220, 'baddie');
+            game.physics.arcade.enable(enemy);
+            enemy.body.gravity.y = 750;
+            enemy.body.velocity.x = -150;
+            enemy.body.collideWorldBounds = true;
+            enemy.animations.add('left', [0, 1], 8, true);
+            enemy.animations.play('left');
             //  Finally some beers to collect
             beers = game.add.group();
             // beers = game.add.beers(0, -27, 27, 27, 'beer');
@@ -147,6 +157,8 @@ if (Meteor.isClient) {
 
             //  Collide the player and the beers with the platforms
             game.physics.arcade.collide(player, platforms);
+            game.physics.arcade.collide(player, enemy);
+            game.physics.arcade.collide(enemy, platforms);
             game.physics.arcade.collide(beers, platforms);
             game.physics.arcade.collide(kegs, platforms);
 
