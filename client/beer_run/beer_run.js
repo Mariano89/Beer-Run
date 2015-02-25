@@ -58,23 +58,22 @@ if (Meteor.isClient) {
 
             //  Now let's create ledges
             
-            // for(var i = 0; i < 5; i++) {
-            //     ledge = platforms.create(400 * i, game.world.height - 64, 'ground');
-            //     ledge.body.immovable = true;
-            //     ledge.body.velocity.x = -400;
-            //     ledge.checkWorldBounds = true;
-            //     ledge.outOfBoundsDestroy = true;
-            // }
-
-            for(var i = 0; i < 20; i++) {
-                ledge = platforms.create(600 * i, game.world.height - 100, 'ground');
+                ledge = platforms.create(500, game.world.height - 64, 'ground');
                 ledge.scale.setTo(1, 5);
                 ledge.body.immovable = true;
                 ledge.body.velocity.x = -400;
                 ledge.checkWorldBounds = true;
                 ledge.outOfBoundsDestroy = true;
 
-                ledge2 = platforms.create(1200 * i, game.world.height - 150, 'ground');
+            for(var i = 0; i < 20; i++) {
+                ledge1 = platforms.create(600 * i, game.world.height - 64, 'ground');
+                ledge1.scale.setTo(1, 5);
+                ledge1.body.immovable = true;
+                ledge1.body.velocity.x = -400;
+                ledge1.checkWorldBounds = true;
+                ledge1.outOfBoundsDestroy = true;
+
+                ledge2 = platforms.create(1200 * i, game.world.height - 120, 'ground');
                 ledge2.scale.setTo(1, 5);
                 ledge2.body.immovable = true;
                 ledge2.body.velocity.x = -400;
