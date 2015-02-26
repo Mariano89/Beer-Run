@@ -93,6 +93,11 @@ if (Meteor.isClient) {
             player.body.collideWorldBounds = false;
             player.body.outofBoundsKill = true;
 
+            if(player.body.outofBounds) {
+
+                playerDeath();
+            }
+
             //  Our two animations, walking left and right.
             player.animations.add('jump', [1], 10, true );
             player.animations.add('right', [0, 1, 2, 3], 8, true);
@@ -164,14 +169,11 @@ if (Meteor.isClient) {
             for(var i = 1; i <= 3; i++) {
                 lives.push(game.add.sprite(16 * (i + i + i - 2), 16, 'heart'));
             }
-
             
             //  Our controls.
             cursors = game.input.keyboard.createCursorKeys();
             space = game.input.keyboard.addKey(32);
             shift = game.input.keyboard.addKey(16);
-            
-
 
         }
 
