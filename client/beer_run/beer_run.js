@@ -23,10 +23,10 @@ if (Meteor.isClient) {
         var cursors;
 
         var beers;
-        var heart;
+        var lives = [];
         var score = 0;
         var scoreText;
-
+        var counter = 3;
         function create() {
 
             //  We're going to be using physics, so enable the Arcade Physics system
@@ -56,29 +56,29 @@ if (Meteor.isClient) {
             // //  This stops it from falling away when you jump on it
             // ground.body.immovable = true;
 
-            // The first ledge we are using
-            ledge = platforms.create(500, game.world.height - 64, 'ground');
-            ledge.scale.setTo(1, 5);
-            ledge.body.immovable = true;
-            ledge.body.velocity.x = -400;
-            ledge.checkWorldBounds = true;
-            ledge.outOfBoundsDestroy = true;
+            // The first ledge we are using the player to start on
+            initial_ledge = platforms.create(500, game.world.height - 64, 'ground');
+            initial_ledge.scale.setTo(1, 5);
+            initial_ledge.body.immovable = true;
+            initial_ledge.body.velocity.x = -400;
+            initial_ledge.checkWorldBounds = true;
+            initial_ledge.outOfBoundsDestroy = true;
 
-            // Taller and shorter ledges
+            // Multiple shorter and taller ledges
             for(var i = 0; i < 50; i++) {
-                ledge1 = platforms.create(600 * i, game.world.height - 64, 'ground');
-                ledge1.scale.setTo(1, 5);
-                ledge1.body.immovable = true;
-                ledge1.body.velocity.x = -400;
-                ledge1.checkWorldBounds = true;
-                ledge1.outOfBoundsDestroy = true;
+                short_ledges = platforms.create(600 * i, game.world.height - 64, 'ground');
+                short_ledges.scale.setTo(1, 5);
+                short_ledges.body.immovable = true;
+                short_ledges.body.velocity.x = -400;
+                short_ledges.checkWorldBounds = true;
+                short_ledges.outOfBoundsDestroy = true;
 
-                ledge2 = platforms.create(1200 * i, game.world.height - 120, 'ground');
-                ledge2.scale.setTo(1, 5);
-                ledge2.body.immovable = true;
-                ledge2.body.velocity.x = -400;
-                ledge2.checkWorldBounds = true;
-                ledge2.outOfBoundsDestroy = true;
+                tall_ledges = platforms.create(1200 * i, game.world.height - 120, 'ground');
+                tall_ledges.scale.setTo(1, 5);
+                tall_ledges.body.immovable = true;
+                tall_ledges.body.velocity.x = -400;
+                tall_ledges.checkWorldBounds = true;
+                tall_ledges.outOfBoundsDestroy = true;
             }
 
             // The player and its settings
@@ -161,13 +161,18 @@ if (Meteor.isClient) {
             scoreText = game.add.text(1050, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
             // Player lives
-            heart = game.add.sprite(16, 16, 'heart');
+            for(var i = 1; i <= 3; i++) {
+                lives.push(game.add.sprite(16 * (i + i + i - 2), 16, 'heart'));
+            }
 
+            
             //  Our controls.
             cursors = game.input.keyboard.createCursorKeys();
             space = game.input.keyboard.addKey(32);
             shift = game.input.keyboard.addKey(16);
             
+
+
         }
 
         function update() {
@@ -200,6 +205,16 @@ if (Meteor.isClient) {
                 player.animations.play('right');
             }
 
+            if (lives.length != 0) {
+                if (shift.isDown) {
+                    playerHit();
+                    shift.isDown = false;
+                }
+            }
+            else {
+                playerDeath();
+            }
+            
         }
 
         function collectBeer (player, beer) {
@@ -221,6 +236,14 @@ if (Meteor.isClient) {
             scoreText.text = 'Score: ' + score;
         }
 
+        function playerHit () {
+            lives.pop().destroy();
+        }
+
+        function playerDeath () {
+            player.destroy();
+        }
+        
         // END OF PHASER-METEOR
    }
 }
