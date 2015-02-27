@@ -14,31 +14,35 @@ if (Meteor.isClient) {
             game.load.image('heart', '../images/heart.png');
             game.load.spritesheet('dude', '../images/dude.png', 45, 62);
             game.load.spritesheet('baddie', '../images/baddie.png', 32, 32);
+            game.load.audio('dudeJump', '../audio/jump_07.wav');
 
         }
 
-        var player;
-        var enemy;
-        var platforms;
-        var cursors;
-        var ledges;
+        var player,
+            enemy,
+            platforms,
+            cursors,
+            bunnies = [],
+            beers,
+            lives = [],
+            score = 0,
+            scoreText,
+            counter = 3,
+            timer,
+            ledges,
+            dudeJump = game.add.audio('dudeJump', 0, 1, false),
+            tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
+            // sky = game.add.sprite(0, -27, 'sky');
 
-        var beers;
-        var lives = [];
-        var score = 0;
-        var scoreText;
-        var counter = 3;
-        var timer;
+
         function create() {
+            
 
             //  We're going to be using physics, so enable the Arcade Physics system
             game.physics.startSystem(Phaser.Physics.NINJA);
-
-            //  A simple background for our game
-            var sky = game.add.sprite(0, -27, 'sky');
-           
+            
             // Auto scroll
-            var tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
+            
             sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
             sky.autoScroll(-100, 0);
             sky.scale.setTo(2, 2);
@@ -107,22 +111,36 @@ if (Meteor.isClient) {
             }
 
             //  Our two animations, walking left and right.
+
+
             player.animations.add('jump', [1], 10, true );
             player.animations.add('right', [0, 1, 2, 3], 8, true);
 
-            // enemy enters
-            enemy = game.add.sprite(600, game.world.height - 220, 'baddie');
-            game.physics.arcade.enable(enemy);
-            enemy.body.gravity.y = 750;
-            enemy.body.velocity.x = -150;
 
-            // enemy.checkWorldBounds = true;
-            enemy.outOfBoundsKill = true;
-            enemy.body.collideWorldBounds = false;
-            enemy.animations.add('left', [0, 1], 8, true);
-            enemy.animations.play('left');
+                // Creates Enemy Rabbits at Random widths
             
+            // enemy = game.add.sprite(600, game.world.height - 220, 'baddie');
+            // enemies.enableBody = true;
+            enemies = game.add.group();
+            for (var i = 0; i < 20; i++){
+                enemy = enemies.create(450, 'baddie');
+                enemy = game.add.sprite((Math.random() *1500), (game.world.height - 220), 'baddie');
+                game.physics.arcade.enable(enemy);
+                enemy.body.gravity.y = 750;
+                enemy.body.velocity.x = -150;
+                enemy.autoCull = true;
 
+                enemy.checkWorldBounds = true;
+                enemy.outOfBoundsKill = true;
+                enemy.body.collideWorldBounds = false;
+                enemy.animations.add('left', [0, 1], 8, true);
+                enemy.animations.play('left');
+                bunnies.push(enemy);
+            }
+            // game.physics.arcade.enable(enemy);
+          
+
+            
             //  Finally some beers to collect
             beers = game.add.group();
 
@@ -178,6 +196,10 @@ if (Meteor.isClient) {
         }
 
         function update() {
+            for(var i =0; i < bunnies.length; i++) {
+                game.physics.arcade.collide(player, bunnies[i]);
+                game.physics.arcade.collide(bunnies[i], platforms);
+            }
 
             //  Collide the player and the beers with the platforms
             game.physics.arcade.collide(player, enemy);
@@ -192,14 +214,16 @@ if (Meteor.isClient) {
 
             //  Player moves to the right;
             player.body.velocity.x = 400;
-
+            
             //  Allow the player to jump if they are touching the ground.
             if (space.isDown && player.body.touching.down)
             {
+                game.sound.play('dudeJump', 1, 0, false, false);
                 player.body.velocity.y = -415;
             }
             else if(player.body.touching.down == false){
                 player.animations.play('jump');
+                
                 player.body.velocity.x = 0;
             }
             else{
