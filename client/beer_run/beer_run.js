@@ -28,7 +28,9 @@ if (Meteor.isClient) {
             score = 0,
             scoreText,
             counter = 3,
-            dudeJump = game.add.audio('dudeJump', 0, 1, false);
+            dudeJump = game.add.audio('dudeJump', 0, 1, false),
+            tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
+            // sky = game.add.sprite(0, -27, 'sky');
 
 
         function create() {
@@ -36,12 +38,9 @@ if (Meteor.isClient) {
 
             //  We're going to be using physics, so enable the Arcade Physics system
             game.physics.startSystem(Phaser.Physics.NINJA);
-
-            //  A simple background for our game
-            var sky = game.add.sprite(0, -27, 'sky');
-           
+            
             // Auto scroll
-            var tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
+            
             sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
             sky.autoScroll(-100, 0);
             sky.scale.setTo(2, 2);
