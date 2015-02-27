@@ -21,13 +21,14 @@ if (Meteor.isClient) {
         var enemy;
         var platforms;
         var cursors;
-
+        var runners = [];
         var beers;
         var lives = [];
         var score = 0;
         var scoreText;
         var counter = 3;
         function create() {
+
 
             //  We're going to be using physics, so enable the Arcade Physics system
             game.physics.startSystem(Phaser.Physics.NINJA);
@@ -102,19 +103,31 @@ if (Meteor.isClient) {
             player.animations.add('jump', [1], 10, true );
             player.animations.add('right', [0, 1, 2, 3], 8, true);
 
-            // enemy enters
-            enemy = game.add.sprite(600, game.world.height - 220, 'baddie');
-            game.physics.arcade.enable(enemy);
-            enemy.body.gravity.y = 750;
-            enemy.body.velocity.x = -150;
 
-            // enemy.checkWorldBounds = true;
-            enemy.outOfBoundsKill = true;
-            enemy.body.collideWorldBounds = false;
-            enemy.animations.add('left', [0, 1], 8, true);
-            enemy.animations.play('left');
+                // Creates Enemy Rabbits at Random widths
             
+            // enemy = game.add.sprite(600, game.world.height - 220, 'baddie');
+            // enemies.enableBody = true;
+            enemies = game.add.group();
+            for (var i = 0; i < 20; i++){
+                enemy = enemies.create(450, 'baddie');
+                enemy = game.add.sprite((Math.random() *1500), (game.world.height - 220), 'baddie');
+                game.physics.arcade.enable(enemy);
+                enemy.body.gravity.y = 750;
+                enemy.body.velocity.x = -150;
+                enemy.autoCull = true;
 
+                enemy.checkWorldBounds = true;
+                enemy.outOfBoundsKill = true;
+                enemy.body.collideWorldBounds = false;
+                enemy.animations.add('left', [0, 1], 8, true);
+                enemy.animations.play('left');
+                runners.push(enemy);
+            }
+            // game.physics.arcade.enable(enemy);
+          
+
+            
             //  Finally some beers to collect
             beers = game.add.group();
             // beers = game.add.beers(0, -27, 27, 27, 'beer');
@@ -178,6 +191,10 @@ if (Meteor.isClient) {
         }
 
         function update() {
+            for(var i =0; i < runners.length; i++) {
+                game.physics.arcade.collide(player, runners[i]);
+                game.physics.arcade.collide(runners[i], platforms);
+            }
 
             //  Collide the player and the beers with the platforms
             game.physics.arcade.collide(player, enemy);
