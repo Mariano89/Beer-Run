@@ -28,6 +28,8 @@ if (Meteor.isClient) {
             score = 0,
             scoreText,
             counter = 3,
+            timer,
+            ledges,
             dudeJump = game.add.audio('dudeJump', 0, 1, false),
             tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
             // sky = game.add.sprite(0, -27, 'sky');
@@ -60,6 +62,12 @@ if (Meteor.isClient) {
             // //  This stops it from falling away when you jump on it
             // ground.body.immovable = true;
 
+
+            // // Repetitive ledge
+            // ledges = game.add.group();
+            // ledges.enableBody = true;
+            // ledges.createMultiple(20, 'ground');
+            
             // The first ledge we are using the player to start on
             initial_ledge = platforms.create(500, game.world.height - 64, 'ground');
             initial_ledge.scale.setTo(1, 5);
@@ -69,7 +77,7 @@ if (Meteor.isClient) {
             initial_ledge.outOfBoundsDestroy = true;
 
             // Multiple shorter and taller ledges
-            for(var i = 0; i < 50; i++) {
+            for(var i = 0; i < 20; i++) {
                 short_ledges = platforms.create(600 * i, game.world.height - 64, 'ground');
                 short_ledges.scale.setTo(1, 5);
                 short_ledges.body.immovable = true;
@@ -135,9 +143,6 @@ if (Meteor.isClient) {
             
             //  Finally some beers to collect
             beers = game.add.group();
-            // beers = game.add.beers(0, -27, 27, 27, 'beer');
-            // beers.autoScroll(-80, 0);
-            // beers.scale.setTo(2, 1.6);
 
             //  We will enable physics for any beer that is created in this group
             beers.enableBody = true;
@@ -147,17 +152,9 @@ if (Meteor.isClient) {
             {
                 //  Create a beer inside of the 'beers' group
                 var beer = beers.create(i * 30, 450, 'beer');
-
-                // //  Let gravity do its thing
-                // beer.body.gravity.y = 300;
-
-                // //  This just gives each beer a slightly random bounce value
-                // beer.body.bounce.y = 0.7 + Math.random() * 0.2;
-
                 beer.body.velocity.x = -400;
                 beer.checkWorldBounds = true;
                 beer.outOfBoundsDestroy = true;
-                
             }
 
             for (var i = 0; i < 100; i++)
@@ -193,6 +190,9 @@ if (Meteor.isClient) {
             space = game.input.keyboard.addKey(32);
             shift = game.input.keyboard.addKey(16);
 
+            // addOneLedge();
+            // timer = game.time.loop(1000, addRowofLedges());
+
         }
 
         function update() {
@@ -203,15 +203,14 @@ if (Meteor.isClient) {
 
             //  Collide the player and the beers with the platforms
             game.physics.arcade.collide(player, enemy);
+            game.physics.arcade.collide(player, ledges);
+
             game.physics.arcade.collide(player, platforms);
-            
             game.physics.arcade.collide(enemy, platforms);
-            game.physics.arcade.collide(beers, platforms);
-            game.physics.arcade.collide(kegs, platforms);
 
             //  Checks to see if the player overlaps with any of the beers, if he does call the collectBeer function
-            game.physics.arcade.overlap(player, beers, collectBeer, null, this);
-            game.physics.arcade.overlap(player, kegs, collectKeg, null, this);
+            game.physics.arcade.overlap(player, beers, collectBeer);
+            game.physics.arcade.overlap(player, kegs, collectKeg);
 
             //  Player moves to the right;
             player.body.velocity.x = 400;
@@ -240,7 +239,7 @@ if (Meteor.isClient) {
             else {
                 playerDeath();
             }
-            
+
         }
 
         function collectBeer (player, beer) {
@@ -263,13 +262,48 @@ if (Meteor.isClient) {
         }
 
         function playerHit () {
+            // Removes a life from the lives array and destroys the heart sprite
             lives.pop().destroy();
         }
 
         function playerDeath () {
-            player.destroy();
+            player.animations.add('right', [0], 8, true);
+            player.body.velocity.x = 0;
+            player.body.velocity.y = 0;
+            // timer = game.time.create(1000, false);
+            // timer.add(3000);
+            // timer.onEvent.add(player.destroy());
+            // timer.start();
         }
-        
+
+
+        // function addRowofLedges(){
+        //         // Pick where the hole will be
+        //         var hole = 10;
+
+        //         // Add the 6 ledges 
+        //         for (var i = 0; i < 8; i++) {
+        //             if (i != hole && i != hole + 1) {
+        //                 addOneLedge(i * 800, 500);   
+        //             }
+        //         }
+        // }
+
+        // function addOneLedge(x, y){
+        //         // Get the first dead ledge of our group
+        //         var ledge = ledges.getFirstDead();
+
+        //         // Set the new position of the ledge
+        //         ledge.reset(x, y);
+
+        //         // Add velocity to the ledge to make it move left
+        //         ledge.body.velocity.x = -400; 
+
+        //         // Kill the ledge when it's no longer visible 
+        //         ledge.checkWorldBounds = true;
+        //         ledge.outOfBoundsKill = true;
+        //         ledge.body.immovable = true;
+        //     }        
         // END OF PHASER-METEOR
    }
 }
