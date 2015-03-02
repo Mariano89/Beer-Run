@@ -1,309 +1,191 @@
-if (Meteor.isClient) { 
-   Template.game.game = function(){
-       /*all your game code here*/
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
+//global variables
+window.onload = function () {
+  var game = new Phaser.Game(1200, 600, Phaser.AUTO, 'beer-run');
 
-        var game = new Phaser.Game(1200, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+  // Game States
+  game.state.add('boot', require('./states/boot'));
+  game.state.add('gameover', require('./states/gameover'));
+  game.state.add('menu', require('./states/menu'));
+  game.state.add('play', require('./states/play'));
+  game.state.add('preload', require('./states/preload'));
+  
 
-        function preload() {
+  game.state.start('boot');
+};
+},{"./states/boot":3,"./states/gameover":4,"./states/menu":5,"./states/play":6,"./states/preload":7}],2:[function(require,module,exports){
+'use strict';
 
-            game.load.image('sky', '../images/citybackground.png');
-            game.load.image('ground', '../images/platform.png');
-            game.load.image('beer', '../images/beer.png');
-            game.load.image('keg', '../images/keg.png');
-            game.load.image('heart', '../images/heart.png');
-            game.load.spritesheet('dude', '../images/dude.png', 45, 62);
-            game.load.spritesheet('baddie', '../images/baddie.png', 32, 32);
-            game.load.audio('dudeJump', '../audio/jump_07.wav');
+var Dude = function(game, x, y, frame) {
+  Phaser.Sprite.call(this, game, x, y, 'dude', frame);
 
-        }
+  this.game.physics.arcade.enable(this);
 
-        var player,
-            enemy,
-            platforms,
-            cursors,
-            bunnies = [],
-            beers,
-            lives = [],
-            score = 0,
-            scoreText,
-            counter = 3,
-            timer,
-            ledges,
-            dudeJump = game.add.audio('dudeJump', 0, 1, false),
-            tileSprite = game.add.tileSprite(0, -27, 653, 352, 'sky');
-            // sky = game.add.sprite(0, -27, 'sky');
+  this.body.gravity.y = 750;
+  this.body.collideWorldBounds = false;
+  this.body.outofBoundsKill = true;
 
+};
 
-        function create() {
-            
+Dude.prototype = Object.create(Phaser.Sprite.prototype);
+Dude.prototype.constructor = Dude;
 
-            //  We're going to be using physics, so enable the Arcade Physics system
-            game.physics.startSystem(Phaser.Physics.NINJA);
-            
-            // Auto scroll
-            
-            sky = game.add.tileSprite(0, -27, 653, 352, 'sky');
-            sky.autoScroll(-100, 0);
-            sky.scale.setTo(2, 2);
+Dude.prototype.update = function() {
+  
+  // write your prefab's specific update code here
+  
+};
 
-            //  The platforms group contains the ground and the 2 ledges we can jump on
-            platforms = game.add.group();
+module.exports = Dude;
 
-            //  We will enable physics for any object that is created in this group
-            platforms.enableBody = true;
+},{}],3:[function(require,module,exports){
 
-            // // Here we create the ground.
-            // var ground = platforms.create(0, game.world.height - 64, 'ground');
+'use strict';
 
-            // //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            // ground.scale.setTo(6, 2);
-
-            // //  This stops it from falling away when you jump on it
-            // ground.body.immovable = true;
-
-
-            // // Repetitive ledge
-            // ledges = game.add.group();
-            // ledges.enableBody = true;
-            // ledges.createMultiple(20, 'ground');
-            
-            // The first ledge we are using the player to start on
-            initial_ledge = platforms.create(500, game.world.height - 64, 'ground');
-            initial_ledge.scale.setTo(1, 5);
-            initial_ledge.body.immovable = true;
-            initial_ledge.body.velocity.x = -400;
-            initial_ledge.checkWorldBounds = true;
-            initial_ledge.outOfBoundsDestroy = true;
-
-            // Multiple shorter and taller ledges
-            for(var i = 0; i < 20; i++) {
-                short_ledges = platforms.create(600 * i, game.world.height - 64, 'ground');
-                short_ledges.scale.setTo(1, 5);
-                short_ledges.body.immovable = true;
-                short_ledges.body.velocity.x = -400;
-                short_ledges.checkWorldBounds = true;
-                short_ledges.outOfBoundsDestroy = true;
-
-                tall_ledges = platforms.create(1200 * i, game.world.height - 120, 'ground');
-                tall_ledges.scale.setTo(1, 5);
-                tall_ledges.body.immovable = true;
-                tall_ledges.body.velocity.x = -400;
-                tall_ledges.checkWorldBounds = true;
-                tall_ledges.outOfBoundsDestroy = true;
-            }
-
-            // The player and its settings
-            player = game.add.sprite(300, game.world.height - 220, 'dude');
-
-            //  We need to enable physics on the player
-            game.physics.arcade.enable(player);
-
-            //  Player physics properties. Give the little guy a slight bounce.
-            // player.body.bounce.y = 0.2;
-            player.body.gravity.y = 750;
-            player.body.collideWorldBounds = false;
-            player.body.outofBoundsKill = true;
-
-            if(player.body.outofBounds) {
-
-                playerDeath();
-            }
-
-            //  Our two animations, walking left and right.
-
-
-            player.animations.add('jump', [1], 10, true );
-            player.animations.add('right', [0, 1, 2, 3], 8, true);
-
-
-                // Creates Enemy Rabbits at Random widths
-            
-            // enemy = game.add.sprite(600, game.world.height - 220, 'baddie');
-            // enemies.enableBody = true;
-            enemies = game.add.group();
-            for (var i = 0; i < 20; i++){
-                enemy = enemies.create(450, 'baddie');
-                enemy = game.add.sprite((Math.random() *1500), (game.world.height - 220), 'baddie');
-                game.physics.arcade.enable(enemy);
-                enemy.body.gravity.y = 750;
-                enemy.body.velocity.x = -150;
-                enemy.autoCull = true;
-
-                enemy.checkWorldBounds = true;
-                enemy.outOfBoundsKill = true;
-                enemy.body.collideWorldBounds = false;
-                enemy.animations.add('left', [0, 1], 8, true);
-                enemy.animations.play('left');
-                bunnies.push(enemy);
-            }
-            // game.physics.arcade.enable(enemy);
-          
-
-            
-            //  Finally some beers to collect
-            beers = game.add.group();
-
-            //  We will enable physics for any beer that is created in this group
-            beers.enableBody = true;
-
-            //  Here we'll create 12 of them evenly spaced apart
-            for (var i = 0; i < 100; i++)
-            {
-                //  Create a beer inside of the 'beers' group
-                var beer = beers.create(i * 30, 450, 'beer');
-                beer.body.velocity.x = -400;
-                beer.checkWorldBounds = true;
-                beer.outOfBoundsDestroy = true;
-            }
-
-            for (var i = 0; i < 100; i++)
-            {
-                var beer = beers.create(i * 60, 400, 'beer');
-                beer.body.velocity.x = -400;
-                beer.checkWorldBounds = true;
-                beer.outOfBoundsDestroy = true;
-            }
-
-            kegs = game.add.group();
-            kegs.enableBody = true;
-
-            for (var i = 0; i < 10; i++)
-            {
-                var keg = kegs.create(i * 100, 300, 'keg');
-                keg.body.velocity.x = -400;
-                keg.checkWorldBounds = true;
-                keg.outOfBoundsDestroy = true;
-            }
-
-
-            //  The score
-            scoreText = game.add.text(1050, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-
-            // Player lives
-            for(var i = 1; i <= 3; i++) {
-                lives.push(game.add.sprite(16 * (i + i + i - 2), 16, 'heart'));
-            }
-            
-            //  Our controls.
-            cursors = game.input.keyboard.createCursorKeys();
-            space = game.input.keyboard.addKey(32);
-            shift = game.input.keyboard.addKey(16);
-
-            // addOneLedge();
-            // timer = game.time.loop(1000, addRowofLedges());
-
-        }
-
-        function update() {
-            for(var i =0; i < bunnies.length; i++) {
-                game.physics.arcade.collide(player, bunnies[i]);
-                game.physics.arcade.collide(bunnies[i], platforms);
-            }
-
-            //  Collide the player and the beers with the platforms
-            game.physics.arcade.collide(player, enemy);
-            game.physics.arcade.collide(player, ledges);
-
-            game.physics.arcade.collide(player, platforms);
-            game.physics.arcade.collide(enemy, platforms);
-
-            //  Checks to see if the player overlaps with any of the beers, if he does call the collectBeer function
-            game.physics.arcade.overlap(player, beers, collectBeer);
-            game.physics.arcade.overlap(player, kegs, collectKeg);
-
-            //  Player moves to the right;
-            player.body.velocity.x = 400;
-            
-            //  Allow the player to jump if they are touching the ground.
-            if (space.isDown && player.body.touching.down)
-            {
-                game.sound.play('dudeJump', 1, 0, false, false);
-                player.body.velocity.y = -415;
-            }
-            else if(player.body.touching.down == false){
-                player.animations.play('jump');
-                
-                player.body.velocity.x = 0;
-            }
-            else{
-                player.animations.play('right');
-            }
-
-            if (lives.length != 0) {
-                if (shift.isDown) {
-                    playerHit();
-                    shift.isDown = false;
-                }
-            }
-            else {
-                playerDeath();
-            }
-
-        }
-
-        function collectBeer (player, beer) {
-            
-            // Removes the beer from the screen
-            beer.destroy();
-
-            //  Add and update the score
-            score += 1;
-            scoreText.text = 'Score: ' + score;
-        }
-
-        function collectKeg (player, keg) {
-            // Removes the beer from the screen
-            keg.destroy();
-
-            //  Add and update the score
-            score += 10;
-            scoreText.text = 'Score: ' + score;
-        }
-
-        function playerHit () {
-            // Removes a life from the lives array and destroys the heart sprite
-            lives.pop().destroy();
-        }
-
-        function playerDeath () {
-            player.animations.add('right', [0], 8, true);
-            player.body.velocity.x = 0;
-            player.body.velocity.y = 0;
-            // timer = game.time.create(1000, false);
-            // timer.add(3000);
-            // timer.onEvent.add(player.destroy());
-            // timer.start();
-        }
-
-
-        // function addRowofLedges(){
-        //         // Pick where the hole will be
-        //         var hole = 10;
-
-        //         // Add the 6 ledges 
-        //         for (var i = 0; i < 8; i++) {
-        //             if (i != hole && i != hole + 1) {
-        //                 addOneLedge(i * 800, 500);   
-        //             }
-        //         }
-        // }
-
-        // function addOneLedge(x, y){
-        //         // Get the first dead ledge of our group
-        //         var ledge = ledges.getFirstDead();
-
-        //         // Set the new position of the ledge
-        //         ledge.reset(x, y);
-
-        //         // Add velocity to the ledge to make it move left
-        //         ledge.body.velocity.x = -400; 
-
-        //         // Kill the ledge when it's no longer visible 
-        //         ledge.checkWorldBounds = true;
-        //         ledge.outOfBoundsKill = true;
-        //         ledge.body.immovable = true;
-        //     }        
-        // END OF PHASER-METEOR
-   }
+function Boot() {
 }
+
+Boot.prototype = {
+  preload: function() {
+    this.load.image('preloader', '../images/preloader.gif');
+  },
+  create: function() {
+    this.game.input.maxPointers = 1;
+    this.game.state.start('preload');
+  }
+};
+
+module.exports = Boot;
+
+},{}],4:[function(require,module,exports){
+
+'use strict';
+function GameOver() {}
+
+GameOver.prototype = {
+  preload: function () {
+
+  },
+  create: function () {
+    var style = { font: '65px Arial', fill: '#ffffff', align: 'center'};
+    this.titleText = this.game.add.text(this.game.world.centerX,100, 'Game Over!', style);
+    this.titleText.anchor.setTo(0.5, 0.5);
+
+    this.congratsText = this.game.add.text(this.game.world.centerX, 200, 'You Win!', { font: '32px Arial', fill: '#ffffff', align: 'center'});
+    this.congratsText.anchor.setTo(0.5, 0.5);
+
+    this.instructionText = this.game.add.text(this.game.world.centerX, 300, 'Click To Play Again', { font: '16px Arial', fill: '#ffffff', align: 'center'});
+    this.instructionText.anchor.setTo(0.5, 0.5);
+  },
+  update: function () {
+    if(this.game.input.activePointer.justPressed()) {
+      this.game.state.start('play');
+    }
+  }
+};
+module.exports = GameOver;
+
+},{}],5:[function(require,module,exports){
+
+'use strict';
+function Menu() {}
+
+Menu.prototype = {
+  preload: function() {
+
+  },
+  create: function() {
+
+    this.background = this.game.add.tileSprite(0, -35, 653, 352, 'background');
+    this.background.scale.setTo(2, 2);
+
+    this.ground = this.game.add.tileSprite(0, 530, this.game.world.width, this.game.world.height, 'ground');
+
+    this.title = this.game.add.sprite(this.game.width/2, 250,'title');
+    this.title.scale.setTo(1.2, 1.2);
+    this.title.anchor.setTo(0.5, 1);
+
+    this.game.add.tween(this.title).to({y:200}, 1000, Phaser.Easing.Linear.NONE, true, 0, 1000, true);
+
+    this.startButton = this.game.add.button(this.game.width/2, 300, 'startButton', this.startClick, this);
+    this.startButton.scale.setTo(2, 2);
+    this.startButton.anchor.setTo(0.5,0.5);
+  },
+  startClick: function() {  
+    this.game.state.start('play');
+  },
+  update: function() {
+  }
+};
+
+module.exports = Menu;
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+var Dude = require('../prefabs/dude');
+
+function Play() {}
+Play.prototype = {
+  create: function() {
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    this.game.physics.arcade.gravity.y = 750;
+
+    this.background = this.game.add.tileSprite(0, -35, 653, 352, 'background');
+    this.background.autoScroll(-100, 0);
+    this.background.scale.setTo(2, 2);
+  },
+  update: function() {
+
+  },
+  clickListener: function() {
+    this.game.state.start('gameover');
+  }
+};
+
+module.exports = Play;
+},{"../prefabs/dude":2}],7:[function(require,module,exports){
+
+'use strict';
+function Preload() {
+  this.asset = null;
+  this.ready = false;
+}
+
+Preload.prototype = {
+  preload: function() {
+    this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
+    this.asset = this.add.sprite(this.width/2, this.height/2, 'preloader');
+    this.asset.anchor.setTo(0.5, 0.5);
+    this.load.setPreloadSprite(this.asset);
+
+    this.load.image('background', '/images/citybackground.png');
+    this.load.image('title', '/images/title.png');
+    this.load.image('startButton', '/images/start-button.png');
+    this.load.image('ground', '/images/platform.png');
+    this.load.image('beer', '/images/beer.png');
+    this.load.image('keg', '/images/keg.png');
+    this.load.image('heart', '/images/heart.png');
+
+    this.load.spritesheet('dude', '/images/dude.png', 45, 62);
+    this.load.spritesheet('baddie', '/images/baddie.png', 32, 32);
+
+  },
+  create: function() {
+    this.asset.cropEnabled = false;
+  },
+  update: function() {
+    if(!!this.ready) {
+      this.game.state.start('menu');
+    }
+  },
+  onLoadComplete: function() {
+    this.ready = true;
+  }
+};
+
+module.exports = Preload;
+
+},{}]},{},[1])
