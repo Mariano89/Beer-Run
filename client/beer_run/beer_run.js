@@ -871,6 +871,7 @@ Preload.prototype = {
     this.load.audio('dudeJump', '/audio/jump_07.wav');
     this.load.audio('explode', '/audio/explosion.wav');
     this.load.audio('clink', '/audio/clink.wav');
+    this.load.audio('mozart', '/audio/Mozart.mp3');
   },
   create: function() {
     this.asset.cropEnabled = false;
