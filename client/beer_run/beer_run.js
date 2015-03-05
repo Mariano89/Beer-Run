@@ -416,7 +416,9 @@ var PausePanel = require('../prefabs/pausePanel');
 var GameOverPanel = require('../prefabs/gameOverPanel');
 var Heart = require('../prefabs/heart');
 var paused = false;
-var deadchecker = true;
+var deadchecker = true; 
+var scoreText;
+
 
 function Play() {}
 Play.prototype = {
@@ -450,6 +452,7 @@ Play.prototype = {
 
     //score
     this.score = 0;
+    this.scoreText = this.game.add.text(15, 15, 'Score: 0', {fontSize: '32px', fill: '#000'});
 
     //beer 
     this.beers = this.game.add.group();
@@ -485,9 +488,9 @@ Play.prototype = {
     //player lives
     this.lives = this.game.add.group();
 
-    this.generateLife(0);
-    this.generateLife(44);
-    this.generateLife(88);
+    this.generateLife(14);
+    // this.generateLife(44);
+    // this.generateLife(88);
 
     this.initGame();
   },
@@ -613,26 +616,26 @@ Play.prototype = {
     // Removes the beer from the screen
     beer.kill();
     //  Add and update the score
-    // score += 1;
-    // scoreText.text = 'Score: ' + score;
+    this.score += 1;
+    this.scoreText.text = 'Score: ' + this.score;
   },
   collectKeg: function(player, keg) {
     // Removes the beer from the screen
     keg.kill();
     //  Add and update the score
-    // score += 5;
-    // scoreText.text = 'Score: ' + score;
+    this.score += 5;
+    this.scoreText.text = 'Score: ' + this.score;
   },
   collectWhiskey: function(player, whiskey) {
     // Removes the beer from the screen
     whiskey.kill();
     //  Add and update the score
-    // score += 5;
-    // scoreText.text = 'Score: ' + score;
+    this.score += 10;
+    this.scoreText.text = 'Score: ' + this.score;
   },
   // Generate Life
   generateLife: function(i){
-    var life = new Heart(this.game, i, 0);
+    var life = new Heart(this.game, i, 50);
     this.lives.add(life);
   },
   damageLife: function(){
@@ -818,7 +821,7 @@ Play.prototype = {
     }
   },
   gameOver: function(){
-    // console.log('game over!');
+    console.log('game over!');
     // Gamover
     this.gameover = true;
     // Pause game
@@ -867,14 +870,14 @@ Preload.prototype = {
     this.load.spritesheet('cop', '/images/cop.png', 28, 65);
 
     //sounds for the game
-    this.load.audio('dudeJump', '/audio/jump_07.wav');
-    this.load.audio('explode', '/audio/explosion.wav');
+    this.load.audio('dudeJump', '/images/audio/jump_07.wav');
+    this.load.audio('explode', '/images/audio/explosion.wav');
   },
   create: function() {
     this.asset.cropEnabled = false;
   },
   update: function() {
-    //if all images have been preloaded and ready, run the menu state(title page)
+    //if all assets have been preloaded and ready, run the menu state(title page)
     if(!!this.ready) {
       this.game.state.start('menu');
     }
