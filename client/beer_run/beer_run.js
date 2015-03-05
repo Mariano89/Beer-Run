@@ -612,6 +612,7 @@ Play.prototype = {
   collectBeer: function(player, beer) {
     // Removes the beer from the screen
     beer.kill();
+    this.game.sound.play('clink', 1, 0, false, false);
     //  Add and update the score
     // score += 1;
     // scoreText.text = 'Score: ' + score;
@@ -869,6 +870,7 @@ Preload.prototype = {
     //sounds for the game
     this.load.audio('dudeJump', '/audio/jump_07.wav');
     this.load.audio('explode', '/audio/explosion.wav');
+    this.load.audio('clink', '/audio/clink.wav');
   },
   create: function() {
     this.asset.cropEnabled = false;
