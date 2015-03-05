@@ -463,7 +463,7 @@ Play.prototype = {
     //game controls
     this.jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT = 16);
-    this touch = this.game.input.pointer1.isDown
+    this.touch = this.game.input.pointer1;
     // this.pauseKey = this.game.input.keyboard.addKey(32);
 
     // makes spacebar not scroll down 
@@ -502,7 +502,7 @@ Play.prototype = {
       //player speed
       this.player.body.velocity.x = 400;
 
-      if (this.jumpKey.isDown && this.player.body.touching.down && this.player.alive)
+      if (this.touch.isDown || this.jumpKey.isDown && this.player.body.touching.down && this.player.alive)
       {
         this.game.sound.play('dudeJump', 1, 0, false, false);
         this.player.jump();
@@ -818,7 +818,7 @@ Play.prototype = {
     }
   },
   gameOver: function(){
-    console.log('game over!');
+    // console.log('game over!');
     // Gamover
     this.gameover = true;
     // Pause game
