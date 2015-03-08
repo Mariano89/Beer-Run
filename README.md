@@ -1,6 +1,9 @@
 #Beer-Run
 
+##Installation Instructions
 
+Install Meteor:
+<pre><code>curl https://install.meteor.com/ | sh</pre></code>
 
 ###Created By:
 
