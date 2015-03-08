@@ -2,8 +2,18 @@
 
 ##Installation Instructions
 
+Clone Repository
+
+####In your terminal run the following commands
+
 Install Meteor:
 <pre><code>curl https://install.meteor.com/ | sh</pre></code>
+
+Launch Meteor from cloned directory:
+<pre><code>meteor</pre></code>
+
+Open up game by going to the following address on your browser:
+<pre><code>http://localhost:3000</pre></code>
 
 ###Created By:
 
