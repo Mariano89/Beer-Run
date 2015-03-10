@@ -25,7 +25,7 @@ var Beer = function(game, x, y, frame) {
 
   this.enableBody = true;
   this.body.velocity.x = 0;
-  this.outofBoundsKill = true;
+  this.outOfBoundsKill = true;
   this.checkWorldBounds = true;
 };
 
@@ -50,6 +50,7 @@ var Bunny = function(game, x, y, frame) {
   this.body.gravity.y = 620;
   this.body.velocity.x = -50;
   this.body.collideWorldBounds = false;
+  this.checkWorldBounds = true;
   this.outOfBoundsKill = true;
 
   //bunny animation frames
@@ -77,6 +78,7 @@ var Cop = function(game, x, y, frame) {
   this.body.gravity.y = 620;
   this.body.velocity.x = -65;
   this.body.collideWorldBounds = false;
+  this.checkWorldBounds = true;
   this.outOfBoundsKill = true;
 
   this.animations.add('copleft', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
@@ -128,7 +130,7 @@ Dude.prototype.update = function() {
 //lets the dude jump
 Dude.prototype.jump = function(){
   this.body.velocity.y = -550;
-}
+};
 
 module.exports = Dude;
 
@@ -153,13 +155,11 @@ var GameOverPanel = function(game, parent) {
 
 GameOverPanel.prototype = Object.create(Phaser.Group.prototype);
 GameOverPanel.prototype.constructor = GameOverPanel;
-// GameOverPanel.prototype.update = function() {
-// };
+GameOverPanel.prototype.update = function() {
+};
 //show the game over panel when paused
 GameOverPanel.prototype.show = function(){
-  // this.game.add.tween(this).to({alpha: 1.0, y:150}, 800, Phaser.Easing.Exponential.In, true, 0);
   this.game.add.tween(this).to({alpha: 1, y:110}, 50, Phaser.Easing.Bounce.Out, true);
-  // this.game.add.text(450, 150, 'SCORE', { fontSize: '500px', fill: '#ffa800' });
   this.playAgain = this.game.add.button(25, 4, 'restart-btn', this.restartGame, this);
   this.playAgain.anchor.setTo(0, 0);
   this.add(this.playAgain);
@@ -168,11 +168,9 @@ GameOverPanel.prototype.show = function(){
 //callback function, when activated starts the play state
 GameOverPanel.prototype.restartGame = function() {  
   this.game.state.start('play');
-  // this.game.state.initGame();
 };
 
 module.exports = GameOverPanel;
-  
 },{}],7:[function(require,module,exports){
 'use strict';
 
@@ -185,15 +183,17 @@ var Ground = function(game, x, y, frame) {
   //ground properties
   this.body.velocity.x = -400;
   this.body.immovable = true;
-  this.checkWorldBounds = true;
-  this.outOfBoundsDestroy = true;
+
+  // this.outOfBoundsKill = true;
   this.body.allowGravity = false;
   
 };
 Ground.prototype = Object.create(Phaser.Sprite.prototype);
 Ground.prototype.constructor = Ground;
-Ground.prototype.update = function() {};
-//reset function for ground obj
+Ground.prototype.update = function() {
+  this.checkWorldBounds = true;
+};
+// reset function for ground obj
 Ground.prototype.reset = function(x, y) {
 
   this.game.physics.arcade.enable(this);
@@ -237,7 +237,7 @@ var Keg = function(game, x, y, frame) {
 
   this.enableBody = true;
   this.body.velocity.x = 0;
-  this.outofBoundsKill = true;
+  this.outOfBoundsKill = true;
   this.checkWorldBounds = true;
 };
 
@@ -282,7 +282,7 @@ PausePanel.prototype.show = function(){
 //hides the pause panel when unpaused
 PausePanel.prototype.unpause = function(){
   this.game.add.tween(this).to({alpha:0, y:150}, 800, Phaser.Easing.Exponential.Out, true, 0);
-  this.game.state.getCurrentState().unpauseGame();
+  this.game.state.getCurrentState().playGame();
 };
 
 module.exports = PausePanel;
@@ -437,7 +437,7 @@ Play.prototype = {
 
     //creates the first ledge when the player lands
     this.initial_ground = new Ground(this.game, 0, this.game.world.height - 64, 300, 150);
-    this.initial_ground.scale.setTo(4.5, 3);
+    this.initial_ground.scale.setTo(5, 3);
     this.game.add.existing(this.initial_ground);
 
     //player 
@@ -495,8 +495,7 @@ Play.prototype = {
     this.initGame();
   },
   update: function() {
-      
-
+      console.log(paused);
     //calls the checkcollisions function 
     this.checkCollisions();
 
@@ -505,7 +504,7 @@ Play.prototype = {
       //player speed
       this.player.body.velocity.x = 400;
 
-      if (this.touch.isDown || this.jumpKey.isDown && this.player.body.touching.down && this.player.alive)
+      if (this.touch.isDown && this.player.body.touching.down && this.player.alive || this.jumpKey.isDown && this.player.body.touching.down && this.player.alive)
       {
         this.game.sound.play('dudeJump', 1, 0, false, false);
         this.player.jump();
@@ -546,10 +545,6 @@ Play.prototype = {
     this.game.physics.arcade.collide(this.kegs, this.initial_ground);
     this.game.physics.arcade.collide(this.whiskeys, this.initial_ground);
 
-    // this.beers.forEach(function(beers){
-    //   this.addScore(beers);
-    // }, this);
-
     //lets player, bunnies, cops, beers, kegs, whiskey stop on ground group
     this.game.physics.arcade.collide(this.player, this.groundGroup);
     this.game.physics.arcade.collide(this.bunnies, this.groundGroup);
@@ -571,26 +566,26 @@ Play.prototype = {
   //generates grounds with random y-value(height)
   generateGrounds: function() {  
     // console.log(this.game.world.height - 64);
-    var randomY = this.game.rnd.integerInRange(440, 520);
+    var randomY = this.game.rnd.integerInRange(450, 520);
     var randGround = this.groundGroup.getFirstExists(false);
       if(!randGround) {
-        randGround = new Ground(this.game, 1200, randomY, 300, 150);
+        randGround = new Ground(this.game, 1200, randomY);
         randGround.scale.setTo(1.5, 10);
         this.groundGroup.add(randGround);
-      }
-      randGround.reset(1200, randomY);
+      };
+      // randGround.reset(1200, randomY);
   },
   //generate cops 
   generateCops: function(){
     // console.log('beer');
-    var cop = new Cop(this.game, 1199, 300);
+    var cop = new Cop(this.game, 1200, 420);
     this.cops.add(cop);
   },
 
   //generate bunnies 
   generateBunnies: function(){
     // console.log('beer');
-    var bunny = new Bunny(this.game, 1199, 300);
+    var bunny = new Bunny(this.game, 1200, 420);
     this.bunnies.add(bunny);
   },
 
@@ -615,7 +610,6 @@ Play.prototype = {
   collectBeer: function(player, beer) {
     // Removes the beer from the screen
     beer.kill();
-    this.game.sound.play('clink', 1, 0, false, false);
     //  Add and update the score
     this.score += 1;
     this.scoreText.text = 'Score: ' + this.score;
@@ -646,7 +640,7 @@ Play.prototype = {
   killDude: function(player, bunnies) {
     if(player.body.touching.right) {
       deadchecker = false;
-      var deadDude = player.animations.play('dead', 3, false, true);
+      var deadDude = player.animations.play('dead', 15, false, true);
       deadDude.play();
       deadDude.killOnComplete = true;
       this.changeDeadChecker(this.player, 'dead');
@@ -679,7 +673,6 @@ Play.prototype = {
     }
   },
 
-
   //when the game initializes start timers for the generators and play game
   initGame: function(){
     //creates grounds at intervals
@@ -687,37 +680,71 @@ Play.prototype = {
     this.groundGenerator.timer.start();
 
     //creates beer at intervals
-    this.beerGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 0.6, this.generateBeers, this);
+    this.beerGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 1, this.generateBeers, this);
     this.beerGenerator.timer.start();
 
     //creates kegs at intervals
-    this.kegGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 2.6, this.generateKegs, this);
+    this.kegGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 2.5, this.generateKegs, this);
     this.kegGenerator.timer.start();
 
     //creates whiskey
-    this.whiskeyGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 1.6, this.generateWhiskeys, this);
+    this.whiskeyGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.generateWhiskeys, this);
     this.whiskeyGenerator.timer.start();
 
     //creates cops
-    this.copGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 3.6, this.generateCops, this);
+    this.copGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 4.5, this.generateCops, this);
     this.copGenerator.timer.start();
 
     //creates bunnies at intervals
-    this.bunnyGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 2.6, this.generateBunnies, this);
+    this.bunnyGenerator = this.game.time.events.loop(Phaser.Timer.SECOND * 2.7, this.generateBunnies, this);
     this.bunnyGenerator.timer.start();
 
     //runs the game
     this.playGame();
   },
   playGame: function(){
+    //run if game is only if paused
     if(paused){
+      this.gameover = false;
       paused = false;
-      //enables to pause the game when out of focus
-      this.game.stage.disableVisibilityChange = false;
+      //disables to pause the game when out of focus
+      this.game.stage.disableVisibilityChange = paused;
 
-      // Show pause button
+      //start animations
+      this.background.autoScroll(-100, 0);
+      this.initial_ground.body.velocity.x = -400;
+      this.groundGroup.forEach(function(randGround){
+        randGround.body.velocity.x = -400;
+      }, this);
+      this.player.body.velocity.x = -400;
+      this.player.animations.currentAnim.resume = true;
+      this.player.body.allowGravity = true;
+
+      //starts/resumes cops animations
+      this.cops.forEach(function(cop){
+        cop.body.velocity.x = -65;
+        cop.animations.currentAnim.paused = false;
+        cop.body.allowGravity = true;
+      }, this);
+
+      //starts/resumes bunnies animations
+      this.bunnies.forEach(function(bunny){
+        bunny.body.velocity.x = -50;
+        bunny.animations.currentAnim.paused = false;
+        bunny.body.allowGravity = true;
+      }, this);
+      
+      //resume generators
+      this.groundGenerator.timer.resume();
+      this.beerGenerator.timer.resume();
+      this.kegGenerator.timer.resume();
+      this.whiskeyGenerator.timer.resume();
+      this.copGenerator.timer.resume();
+      this.bunnyGenerator.timer.resume();
+
+      //show pause button
       this.game.add.tween(this.btnPause).to({alpha:1}, 1000, Phaser.Easing.Exponential.In, true);
-    };
+    };//else do nothing
   },
   //manually made pause function
   //stops all movement to mimic a paused state and show a pop up paused panel
@@ -727,7 +754,7 @@ Play.prototype = {
       paused = true;
       //disables to pause the game when out of focus
       //this function starts the game if paused so we need to disable it
-      this.game.stage.disableVisibilityChange = true;
+      this.game.stage.disableVisibilityChange = paused;
 
       //stop animations, auto scrolls, and physics
       this.background.autoScroll(0, 0);
@@ -750,7 +777,6 @@ Play.prototype = {
         bunny.animations.currentAnim.paused = true;
       }, this);
 
-
       //pause generators
       this.groundGenerator.timer.pause();
       this.beerGenerator.timer.pause();
@@ -772,48 +798,6 @@ Play.prototype = {
   },
   //manually made unpause function
   //resumes the game state
-  unpauseGame: function(){
-    //if game is paused and the unpauseGame is called run the fucntion
-    if(paused){
-      paused = false;
-      //disables to pause the game when out of focus
-      this.game.stage.disableVisibilityChange = false;
-
-      //start animations
-      this.background.autoScroll(-100, 0);
-      this.initial_ground.body.velocity.x = -400;
-      this.groundGroup.forEach(function(randGround){
-        randGround.body.velocity.x = -400;
-      }, this);
-      this.player.body.velocity.x = -400;
-      this.player.animations.currentAnim.resume = true;
-      this.player.body.allowGravity = true;
-
-      this.cops.forEach(function(cop){
-        cop.body.velocity.x = -65;
-        cop.animations.currentAnim.paused = false;
-        cop.body.allowGravity = true;
-      }, this);
-
-      this.bunnies.forEach(function(bunny){
-        bunny.body.velocity.x = -50;
-        bunny.animations.currentAnim.paused = false;
-        bunny.body.allowGravity = true;
-      }, this);
-      
-
-      //resume generators
-      this.groundGenerator.timer.resume();
-      this.beerGenerator.timer.resume();
-      this.kegGenerator.timer.resume();
-      this.whiskeyGenerator.timer.resume();
-      this.copGenerator.timer.resume();
-      this.bunnyGenerator.timer.resume();
-
-      //show pause button
-      this.game.add.tween(this.btnPause).to({alpha:1}, 1000, Phaser.Easing.Exponential.In, true);
-    };//else do nothing
-  },
   addScore: function(input) {  
     if(input.exists && !input.hasScored) {
         input.hasScored = true;
@@ -822,14 +806,29 @@ Play.prototype = {
     }
   },
   gameOver: function(){
-    console.log('game over!');
     // Gamover
     this.gameover = true;
+    
     // Pause game
+    this.pauseGame();
+
     // Show gameover panel
     this.gameOverPanel.show();
+  },
+  //reset all functions when moving back to play state
+  //destroys memory in order to loaf a fresh game
+  shutdown: function() {  
+    this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+    this.player.destroy();
+    this.beers.destroy();
+    this.cops.destroy();
+    this.whiskeys.destroy();
+    this.groundGroup.destroy();
+    this.bunnies.destroy();
+    this.kegs.destroy();
+    this.pausePanel.destroy();
+    this.gameOverPanel.destroy();
   }
-
 };
 
 module.exports = Play;
@@ -851,29 +850,28 @@ Preload.prototype = {
     this.load.setPreloadSprite(this.asset);
 
     //images for the game
-    this.load.image('background', '/images/citybackground.png');
-    this.load.image('title', '/images/title.png');
-    this.load.image('startButton', '/images/start-button.png');
-    this.load.image('ground', '/images/platform.png');
-    this.load.image('beer', '/images/beer.png');
-    this.load.image('keg', '/images/keg.png');
-    this.load.image('whiskey', '/images/whiskey.png');
-    this.load.image('heart', '/images/heart.png');
-    this.load.image('pause-btn', '/images/pause-btn.png');
-    this.load.image('pausePanel', '/images/pausePanel.png');
-    this.load.image('gameOverPanel', '/images/panelGray.png');
-    this.load.image('play-btn', '/images/play-btn.png');
-    this.load.image('restart-btn', '/images/playagain.png');
+    this.load.image('background', 'assets/citybackground.png');
+    this.load.image('title', 'assets/title.png');
+    this.load.image('startButton', 'assets/start-button.png');
+    this.load.image('ground', 'assets/platform.png');
+    this.load.image('beer', 'assets/beer.png');
+    this.load.image('keg', 'assets/keg.png');
+    this.load.image('whiskey', 'assets/whiskey.png');
+    this.load.image('heart', 'assets/heart.png');
+    this.load.image('pause-btn', 'assets/pause-btn.png');
+    this.load.image('pausePanel', 'assets/pausePanel.png');
+    this.load.image('gameOverPanel', 'assets/panelGray.png');
+    this.load.image('play-btn', 'assets/play-btn.png');
+    this.load.image('restart-btn', 'assets/playagain.png');
 
     //spritesheets for the game
-    this.load.spritesheet('dude', '/images/dude.png', 45, 62);
-    this.load.spritesheet('bunny', '/images/baddie.png', 32, 32);
-    this.load.spritesheet('cop', '/images/cop.png', 28, 65);
+    this.load.spritesheet('dude', 'assets/dude.png', 45, 62);
+    this.load.spritesheet('bunny', 'assets/baddie.png', 32, 32);
+    this.load.spritesheet('cop', 'assets/cop.png', 28, 65);
 
     //sounds for the game
-    this.load.audio('dudeJump', '/audio/jump_07.wav');
-    this.load.audio('explode', '/audio/explosion.wav');
-    this.load.audio('clink', '/audio/clink.wav');
+    this.load.audio('dudeJump', 'assets/audio/jump_07.wav');
+    this.load.audio('explode', 'assets/audio/explosion.wav');
   },
   create: function() {
     this.asset.cropEnabled = false;
