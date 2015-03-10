@@ -320,11 +320,11 @@ module.exports = Whiskey;
 
 function Boot() {
 }
-//if the assets are still loading run this
+//if the /images are still loading run this
 Boot.prototype = {
   preload: function() {
     //loads an loading gif 
-    this.load.image('preloader', 'assets/preloader.gif');
+    this.load.image('preloader', '/images/preloader.gif');
   },
   create: function() {
     this.game.input.maxPointers = 1;
@@ -578,7 +578,7 @@ Play.prototype = {
   //generate cops 
   generateCops: function(){
     // console.log('beer');
-    var cop = new Cop(this.game, 1200, 420);
+    var cop = new Cop(this.game, 1200, 400);
     this.cops.add(cop);
   },
 
@@ -850,34 +850,34 @@ Preload.prototype = {
     this.load.setPreloadSprite(this.asset);
 
     //images for the game
-    this.load.image('background', 'assets/citybackground.png');
-    this.load.image('title', 'assets/title.png');
-    this.load.image('startButton', 'assets/start-button.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('beer', 'assets/beer.png');
-    this.load.image('keg', 'assets/keg.png');
-    this.load.image('whiskey', 'assets/whiskey.png');
-    this.load.image('heart', 'assets/heart.png');
-    this.load.image('pause-btn', 'assets/pause-btn.png');
-    this.load.image('pausePanel', 'assets/pausePanel.png');
-    this.load.image('gameOverPanel', 'assets/panelGray.png');
-    this.load.image('play-btn', 'assets/play-btn.png');
-    this.load.image('restart-btn', 'assets/playagain.png');
+    this.load.image('background', '/images/citybackground.png');
+    this.load.image('title', '/images/title.png');
+    this.load.image('startButton', '/images/start-button.png');
+    this.load.image('ground', '/images/platform.png');
+    this.load.image('beer', '/images/beer.png');
+    this.load.image('keg', '/images/keg.png');
+    this.load.image('whiskey', '/images/whiskey.png');
+    this.load.image('heart', '/images/heart.png');
+    this.load.image('pause-btn', '/images/pause-btn.png');
+    this.load.image('pausePanel', '/images/pausePanel.png');
+    this.load.image('gameOverPanel', '/images/panelGray.png');
+    this.load.image('play-btn', '/images/play-btn.png');
+    this.load.image('restart-btn', '/images/playagain.png');
 
     //spritesheets for the game
-    this.load.spritesheet('dude', 'assets/dude.png', 45, 62);
-    this.load.spritesheet('bunny', 'assets/baddie.png', 32, 32);
-    this.load.spritesheet('cop', 'assets/cop.png', 28, 65);
+    this.load.spritesheet('dude', '/images/dude.png', 45, 62);
+    this.load.spritesheet('bunny', '/images/baddie.png', 32, 32);
+    this.load.spritesheet('cop', '/images/cop.png', 28, 65);
 
     //sounds for the game
-    this.load.audio('dudeJump', 'assets/audio/jump_07.wav');
-    this.load.audio('explode', 'assets/audio/explosion.wav');
+    this.load.audio('dudeJump', '/audio/jump_07.wav');
+    this.load.audio('explode', '/audio/explosion.wav');
   },
   create: function() {
     this.asset.cropEnabled = false;
   },
   update: function() {
-    //if all assets have been preloaded and ready, run the menu state(title page)
+    //if all /images have been preloaded and ready, run the menu state(title page)
     if(!!this.ready) {
       this.game.state.start('menu');
     }
