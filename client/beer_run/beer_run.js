@@ -618,6 +618,7 @@ Play.prototype = {
   collectKeg: function(player, keg) {
     // Removes the beer from the screen
     keg.kill();
+    this.game.sound.play('burp', 1, 0, false, false);
     //  Add and update the score
     this.score += 5;
     this.scoreText.text = 'Score: ' + this.score;
@@ -874,6 +875,7 @@ Preload.prototype = {
     this.load.audio('dudeJump', '/audio/jump_07.wav');
     this.load.audio('explode', '/audio/explosion.wav');
     this.load.audio('collect_beer', '/audio/collect_beer.wav');
+    this.load.audio('burp', 'audio/burp.mp3');
   },
   create: function() {
     this.asset.cropEnabled = false;
