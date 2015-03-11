@@ -626,6 +626,7 @@ Play.prototype = {
   collectWhiskey: function(player, whiskey) {
     // Removes the beer from the screen
     whiskey.kill();
+    this.game.sound.play('hiccup', 1, 0, false, false);
     //  Add and update the score
     this.score += 10;
     this.scoreText.text = 'Score: ' + this.score;
@@ -876,6 +877,7 @@ Preload.prototype = {
     this.load.audio('explode', '/audio/explosion.wav');
     this.load.audio('collect_beer', '/audio/collect_beer.wav');
     this.load.audio('burp', 'audio/burp.mp3');
+    this.load.audio('hiccup', 'audio/hiccup.wav');
   },
   create: function() {
     this.asset.cropEnabled = false;
