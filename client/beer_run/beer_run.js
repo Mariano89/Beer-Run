@@ -811,6 +811,7 @@ Play.prototype = {
   gameOver: function(){
     // Gamover
     this.gameover = true;
+    this.game.sound.play('scream', 1, 0, false, false);
     
     // Pause game
     this.pauseGame();
@@ -878,6 +879,7 @@ Preload.prototype = {
     this.load.audio('collect_beer', '/audio/collect_beer.wav');
     this.load.audio('burp', 'audio/burp.mp3');
     this.load.audio('hiccup', 'audio/hiccup.wav');
+    this.load.audio('scream', 'audio/scream.ogg');
   },
   create: function() {
     this.asset.cropEnabled = false;
