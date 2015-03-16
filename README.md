@@ -15,10 +15,10 @@
 <pre><code>meteor</pre></code>
 
 
-4. Open up game by going to the following address on your browser:
+4. Open game by going to the following address on your browser:
 <pre><code>http://localhost:3000</pre></code>
 
-##How to Edit Game in Beer Run Yeoman
+##How to Edit Game in Beer-Run Yeoman
 
 1. Go to Beer-Run Yeoman/Grunt/Browserify repository at:
 [Beer Run OOP](https://github.com/althe1/beer-run2)
