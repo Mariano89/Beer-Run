@@ -489,8 +489,8 @@ Play.prototype = {
     this.lives = this.game.add.group();
 
     this.generateLife(14);
-    // this.generateLife(44);
-    // this.generateLife(88);
+    this.generateLife(60);
+    this.generateLife(106);
 
     this.initGame();
   },
