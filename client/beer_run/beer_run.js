@@ -50,6 +50,7 @@ var Bunny = function(game, x, y, frame) {
   this.body.gravity.y = 620;
   this.body.velocity.x = -50;
   this.body.collideWorldBounds = false;
+  this.body.setSize(30, 32, 2, 0);
   this.checkWorldBounds = true;
   this.outOfBoundsKill = true;
 
@@ -78,6 +79,7 @@ var Cop = function(game, x, y, frame) {
   this.body.gravity.y = 620;
   this.body.velocity.x = -65;
   this.body.collideWorldBounds = false;
+  this.body.setSize(20, 60, 0, 5);
   this.checkWorldBounds = true;
   this.outOfBoundsKill = true;
 
@@ -110,6 +112,7 @@ var Dude = function(game, x, y, frame) {
   //dude properties
   this.body.gravity.y = 720;
   this.body.velocity.x = 400;
+  this.body.setSize(25, 60, 5, 0);
   this.body.collideWorldBounds = false;
   this.checkWorldBounds = true;
   this.outOfBoundsKill = true;
@@ -208,7 +211,6 @@ Ground.prototype.reset = function(x, y) {
 };
 
 module.exports = Ground;
-
 },{}],8:[function(require,module,exports){
 'use strict';
 
@@ -320,11 +322,11 @@ module.exports = Whiskey;
 
 function Boot() {
 }
-//if the /images are still loading run this
+//if the assets are still loading run this
 Boot.prototype = {
   preload: function() {
     //loads an loading gif 
-    this.load.image('preloader', '/images/preloader.gif');
+    this.load.image('preloader', 'images/preloader.gif');
   },
   create: function() {
     this.game.input.maxPointers = 1;
@@ -442,6 +444,7 @@ Play.prototype = {
 
     //player 
     this.player = new Dude(this.game, 500, 0)
+    this.player.jumpCount = 0;
     this.game.add.existing(this.player);
 
     //cops
@@ -467,6 +470,10 @@ Play.prototype = {
     this.jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT = 16);
     this.touch = this.game.input.pointer1;
+
+    // Tells phaser to fire doubleJump() ONCE per onDown event
+    this.jumpKey.onDown.add(this.doubleJump, this);
+    
     // this.pauseKey = this.game.input.keyboard.addKey(32);
 
     // makes spacebar not scroll down 
@@ -495,7 +502,6 @@ Play.prototype = {
     this.initGame();
   },
   update: function() {
-      console.log(paused);
     //calls the checkcollisions function 
     this.checkCollisions();
 
@@ -506,17 +512,19 @@ Play.prototype = {
 
       if (this.touch.isDown && this.player.body.touching.down && this.player.alive || this.jumpKey.isDown && this.player.body.touching.down && this.player.alive)
       {
-        this.game.sound.play('dudeJump', 1, 0, false, false);
-        this.player.jump();
+        this.doubleJump();
       }
       else if(!this.player.body.touching.down){
         this.player.animations.play('jump');
         this.player.body.velocity.x = 0; 
+
       }
       else if(deadchecker == false){
       }
       else{
         this.player.animations.play('run');
+        this.player.body.setSize(25, 60, 5, 0);
+        this.player.jumpCount = 0; 
       };
 
       if(!this.player.alive) {
@@ -526,8 +534,24 @@ Play.prototype = {
         this.gameOver();
       };
 
+      if(this.lives.children[0] === undefined) {
+        console.log("All lives gone");
+        this.gameOver();
+        var deadDude = this.player.animations.play('dead', 15, false, true);
+        deadDude.play();
+      };
+
     };
 
+  },
+
+  doubleJump: function() {
+    if (this.player.jumpCount < 2) {
+      this.player.jump();
+      this.game.sound.play('dudeJump', 1, 0, false, false);
+      this.player.body.setSize(15, 60, 5, 0);
+      this.player.jumpCount ++;
+    };
   },
 
   returnFalse: function() {
@@ -560,8 +584,8 @@ Play.prototype = {
     this.game.physics.arcade.overlap(this.player, this.whiskeys, this.collectWhiskey, null, this);
 
     //lets player dies when cops and bunnies touch him
-    this.game.physics.arcade.overlap(this.player, this.bunnies, this.killDude, this.returnFalse, this);
-    this.game.physics.arcade.overlap(this.player, this.cops, this.killCop, this.returnFalse, this);
+    this.game.physics.arcade.overlap(this.player, this.bunnies, this.bunnyDamageDude, this.returnFalse, this);
+    this.game.physics.arcade.overlap(this.player, this.cops, this.copDamageDude, this.returnFalse, this);
   },
   //generates grounds with random y-value(height)
   generateGrounds: function() {  
@@ -639,8 +663,28 @@ Play.prototype = {
   damageLife: function(){
     this.lives.children.pop();
   },
-  //
-  killDude: function(player, bunnies) {
+  bunnyDamageDude: function(player, bunnies) {
+    if(player.body.touching.right) {
+      // var hitDude = player.animations.play('run', 8, false, true);
+      // hitDude.play();
+      this.damageLife();
+      console.log("bunnyDamageDude");
+      this.changeDeadChecker(this.player);
+    }
+    else if(player.body.touching.down && bunnies.body.touching.up) {
+      bunnies.animations.play('boom', 3, false, true);
+      this.game.sound.play('explode', 1, 0, false, false);
+      this.changeDeadChecker(this.player, 'alive');
+    }
+  },
+
+  copDamageDude: function(player, cops) {
+    if(player.body.touching.right) {
+      this.damageLife();
+      this.changeDeadChecker(this.player);
+    }
+  },  
+  bunnyKillDude: function(player, bunnies) {
     if(player.body.touching.right) {
       deadchecker = false;
       var deadDude = player.animations.play('dead', 15, false, true);
@@ -655,7 +699,7 @@ Play.prototype = {
     }
   },
 
-  killCop: function(player, cops) {
+  copKillDude: function(player, cops) {
     if(player.body.touching.right) {
       deadchecker = false;
       var deadDude = player.animations.play('dead', 3, false, true);
@@ -666,7 +710,7 @@ Play.prototype = {
   },  
 
   changeDeadChecker: function(player, deadOrAlive) {
-    setTimeout(changeDead, 500);
+    setTimeout(changeDead, 1200);
 
     function changeDead() {
       deadchecker = true;
@@ -836,10 +880,7 @@ Play.prototype = {
 };
 
 module.exports = Play;
-
-
 },{"../prefabs/beer":2,"../prefabs/bunny":3,"../prefabs/cop":4,"../prefabs/dude":5,"../prefabs/gameOverPanel":6,"../prefabs/ground":7,"../prefabs/heart":8,"../prefabs/keg":9,"../prefabs/pausePanel":10,"../prefabs/whiskey":11}],16:[function(require,module,exports){
-
 'use strict';
 function Preload() {
   this.asset = null;
@@ -854,29 +895,29 @@ Preload.prototype = {
     this.load.setPreloadSprite(this.asset);
 
     //images for the game
-    this.load.image('background', '/images/citybackground.png');
-    this.load.image('title', '/images/title.png');
-    this.load.image('startButton', '/images/start-button.png');
-    this.load.image('ground', '/images/platform.png');
-    this.load.image('beer', '/images/beer.png');
-    this.load.image('keg', '/images/keg.png');
-    this.load.image('whiskey', '/images/whiskey.png');
-    this.load.image('heart', '/images/heart.png');
-    this.load.image('pause-btn', '/images/pause-btn.png');
-    this.load.image('pausePanel', '/images/pausePanel.png');
-    this.load.image('gameOverPanel', '/images/panelGray.png');
-    this.load.image('play-btn', '/images/play-btn.png');
-    this.load.image('restart-btn', '/images/playagain.png');
+    this.load.image('background', 'images/citybackground.png');
+    this.load.image('title', 'images/title.png');
+    this.load.image('startButton', 'images/start-button.png');
+    this.load.image('ground', 'images/platform.png');
+    this.load.image('beer', 'images/beer.png');
+    this.load.image('keg', 'images/keg.png');
+    this.load.image('whiskey', 'images/whiskey.png');
+    this.load.image('heart', 'images/heart.png');
+    this.load.image('pause-btn', 'images/pause-btn.png');
+    this.load.image('pausePanel', 'images/pausePanel.png');
+    this.load.image('gameOverPanel', 'images/panelGray.png');
+    this.load.image('play-btn', 'images/play-btn.png');
+    this.load.image('restart-btn', 'images/playagain.png');
 
     //spritesheets for the game
-    this.load.spritesheet('dude', '/images/dude.png', 45, 62);
-    this.load.spritesheet('bunny', '/images/baddie.png', 32, 32);
-    this.load.spritesheet('cop', '/images/cop.png', 28, 65);
+    this.load.spritesheet('dude', 'images/dude.png', 45, 62);
+    this.load.spritesheet('bunny', 'images/baddie.png', 32, 32);
+    this.load.spritesheet('cop', 'images/cop.png', 28, 65);
 
     //sounds for the game
-    this.load.audio('dudeJump', '/audio/jump_07.wav');
-    this.load.audio('explode', '/audio/explosion.wav');
-    this.load.audio('collect_beer', '/audio/collect_beer.wav');
+    this.load.audio('dudeJump', 'audio/jump_07.wav');
+    this.load.audio('explode', 'audio/explosion.wav');
+    this.load.audio('collect_beer', 'audio/collect_beer.wav');
     this.load.audio('burp', 'audio/burp.mp3');
     this.load.audio('hiccup', 'audio/hiccup.wav');
     this.load.audio('scream', 'audio/scream.ogg');
@@ -885,7 +926,7 @@ Preload.prototype = {
     this.asset.cropEnabled = false;
   },
   update: function() {
-    //if all /images have been preloaded and ready, run the menu state(title page)
+    //if all assets have been preloaded and ready, run the menu state(title page)
     if(!!this.ready) {
       this.game.state.start('menu');
     }
@@ -896,5 +937,4 @@ Preload.prototype = {
 };
 
 module.exports = Preload;
-
 },{}]},{},[1])
