@@ -5,6 +5,10 @@
 <body>
 	<img src="/images/banner.png">
   <h1>HOW TO PLAY: &nbsp;press SPACEBAR or TAP to jump.</h1>
+      {{#each scores}}
+        {{> score}}
+      {{/each}}
+
   {{> game}}
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -17,6 +21,10 @@
 
 </script>
 </body>
+
+<template name="score">
+  <li>{{text}}</li>
+</template>
 
 <template name="game">
 	{{game}}
