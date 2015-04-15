@@ -7130,7 +7130,7 @@ PIXI.WebGLStencilManager.prototype.bindGraphics = function(graphics, webGLData, 
  */
 PIXI.WebGLStencilManager.prototype.popStencil = function(graphics, webGLData, renderSession)
 {
-    var gl = this.gl;
+  var gl = this.gl;
     this.stencilStack.pop();
    
     this.count--;
@@ -9114,7 +9114,7 @@ PIXI.CanvasMaskManager.prototype.constructor = PIXI.CanvasMaskManager;
  */
 PIXI.CanvasMaskManager.prototype.pushMask = function(maskData, renderSession)
 {
-    var context = renderSession.context;
+  var context = renderSession.context;
 
     context.save();
     
@@ -12371,8 +12371,8 @@ PIXI.AbstractFilter.prototype.apply = function(frameBuffer)
 */
 var Phaser = Phaser || {
 
-    VERSION: '2.2.2',
-    GAMES: [],
+  VERSION: '2.2.2',
+  GAMES: [],
 
     AUTO: 0,
     CANVAS: 1,
@@ -20482,7 +20482,7 @@ Phaser.Stage.prototype.checkVisibility = function () {
     window.onfocus = this._onChange;
     
     var _this = this;
-    
+  
     if (this.game.device.cocoonJSApp)
     {
         CocoonJS.App.onSuspended.addEventListener(function () {
@@ -63283,7 +63283,7 @@ Phaser.Physics.Arcade.prototype = {
     * You can perform Sprite vs. Sprite, Sprite vs. Group and Group vs. Group overlap checks.
     * Unlike collide the objects are NOT automatically separated or have any physics applied, they merely test for overlap results.
     * Both the first and second parameter can be arrays of objects, of differing types.
-    * If two arrays are passed, the contents of the first parameter will be tested against all contents of the 2nd parameter.
+  * If two arrays are passed, the contents of the first parameter will be tested against all contents of the 2nd parameter.
     * NOTE: This function is not recursive, and will not test against children of objects passed (i.e. Groups within Groups).
     *
     * @method Phaser.Physics.Arcade#overlap
@@ -63339,7 +63339,7 @@ Phaser.Physics.Arcade.prototype = {
     /**
     * Checks for collision between two game objects. You can perform Sprite vs. Sprite, Sprite vs. Group, Group vs. Group, Sprite vs. Tilemap Layer or Group vs. Tilemap Layer collisions.
     * Both the first and second parameter can be arrays of objects, of differing types.
-    * If two arrays are passed, the contents of the first parameter will be tested against all contents of the 2nd parameter.
+  * If two arrays are passed, the contents of the first parameter will be tested against all contents of the 2nd parameter.
     * The objects are also automatically separated. If you don't require separation then use ArcadePhysics.overlap instead.
     * An optional processCallback can be provided. If given this function will be called when two sprites are found to be colliding. It is called before any separation takes place,
     * giving you the chance to perform additional checks. If the function returns true then the collision and separation is carried out. If it returns false it is skipped.
@@ -68475,7 +68475,7 @@ Phaser.Tilemap.prototype = {
             this.layers[layer].data[ diffY + tileblock[i].y ][ diffX + tileblock[i].x ].copy(tileblock[i]);
         }
 
-        this.layers[layer].dirty = true;
+    this.layers[layer].dirty = true;
         this.calculateFaces(layer);
 
     },
@@ -72041,88 +72041,88 @@ function assert (test, message) {
 module.exports=require('PcZj9L');
 },{}],3:[function(require,module,exports){
 (function (exports) {
-    'use strict';
+  'use strict';
 
-    var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-    function b64ToByteArray(b64) {
-        var i, j, l, tmp, placeHolders, arr;
-    
-        if (b64.length % 4 > 0) {
-            throw 'Invalid string. Length must be a multiple of 4';
-        }
-
-        // the number of equal signs (place holders)
-        // if there are two placeholders, than the two characters before it
-        // represent one byte
-        // if there is only one, then the three characters before it represent 2 bytes
-        // this is just a cheap hack to not do indexOf twice
-        placeHolders = b64.indexOf('=');
-        placeHolders = placeHolders > 0 ? b64.length - placeHolders : 0;
-
-        // base64 is 4/3 + up to two characters of the original data
-        arr = [];//new Uint8Array(b64.length * 3 / 4 - placeHolders);
-
-        // if there are placeholders, only get up to the last complete 4 chars
-        l = placeHolders > 0 ? b64.length - 4 : b64.length;
-
-        for (i = 0, j = 0; i < l; i += 4, j += 3) {
-            tmp = (lookup.indexOf(b64[i]) << 18) | (lookup.indexOf(b64[i + 1]) << 12) | (lookup.indexOf(b64[i + 2]) << 6) | lookup.indexOf(b64[i + 3]);
-            arr.push((tmp & 0xFF0000) >> 16);
-            arr.push((tmp & 0xFF00) >> 8);
-            arr.push(tmp & 0xFF);
-        }
-
-        if (placeHolders === 2) {
-            tmp = (lookup.indexOf(b64[i]) << 2) | (lookup.indexOf(b64[i + 1]) >> 4);
-            arr.push(tmp & 0xFF);
-        } else if (placeHolders === 1) {
-            tmp = (lookup.indexOf(b64[i]) << 10) | (lookup.indexOf(b64[i + 1]) << 4) | (lookup.indexOf(b64[i + 2]) >> 2);
-            arr.push((tmp >> 8) & 0xFF);
-            arr.push(tmp & 0xFF);
-        }
-
-        return arr;
+  function b64ToByteArray(b64) {
+    var i, j, l, tmp, placeHolders, arr;
+  
+    if (b64.length % 4 > 0) {
+      throw 'Invalid string. Length must be a multiple of 4';
     }
 
-    function uint8ToBase64(uint8) {
-        var i,
-            extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-            output = "",
-            temp, length;
+    // the number of equal signs (place holders)
+    // if there are two placeholders, than the two characters before it
+    // represent one byte
+    // if there is only one, then the three characters before it represent 2 bytes
+    // this is just a cheap hack to not do indexOf twice
+    placeHolders = b64.indexOf('=');
+    placeHolders = placeHolders > 0 ? b64.length - placeHolders : 0;
 
-        function tripletToBase64 (num) {
-            return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
-        };
+    // base64 is 4/3 + up to two characters of the original data
+    arr = [];//new Uint8Array(b64.length * 3 / 4 - placeHolders);
 
-        // go through the array every three bytes, we'll deal with trailing stuff later
-        for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-            temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
-            output += tripletToBase64(temp);
-        }
+    // if there are placeholders, only get up to the last complete 4 chars
+    l = placeHolders > 0 ? b64.length - 4 : b64.length;
 
-        // pad the end with zeros, but make sure to not forget the extra bytes
-        switch (extraBytes) {
-            case 1:
-                temp = uint8[uint8.length - 1];
-                output += lookup[temp >> 2];
-                output += lookup[(temp << 4) & 0x3F];
-                output += '==';
-                break;
-            case 2:
-                temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1]);
-                output += lookup[temp >> 10];
-                output += lookup[(temp >> 4) & 0x3F];
-                output += lookup[(temp << 2) & 0x3F];
-                output += '=';
-                break;
-        }
-
-        return output;
+    for (i = 0, j = 0; i < l; i += 4, j += 3) {
+      tmp = (lookup.indexOf(b64[i]) << 18) | (lookup.indexOf(b64[i + 1]) << 12) | (lookup.indexOf(b64[i + 2]) << 6) | lookup.indexOf(b64[i + 3]);
+      arr.push((tmp & 0xFF0000) >> 16);
+      arr.push((tmp & 0xFF00) >> 8);
+      arr.push(tmp & 0xFF);
     }
 
-    module.exports.toByteArray = b64ToByteArray;
-    module.exports.fromByteArray = uint8ToBase64;
+    if (placeHolders === 2) {
+      tmp = (lookup.indexOf(b64[i]) << 2) | (lookup.indexOf(b64[i + 1]) >> 4);
+      arr.push(tmp & 0xFF);
+    } else if (placeHolders === 1) {
+      tmp = (lookup.indexOf(b64[i]) << 10) | (lookup.indexOf(b64[i + 1]) << 4) | (lookup.indexOf(b64[i + 2]) >> 2);
+      arr.push((tmp >> 8) & 0xFF);
+      arr.push(tmp & 0xFF);
+    }
+
+    return arr;
+  }
+
+  function uint8ToBase64(uint8) {
+    var i,
+      extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+      output = "",
+      temp, length;
+
+    function tripletToBase64 (num) {
+      return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
+    };
+
+    // go through the array every three bytes, we'll deal with trailing stuff later
+    for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+      temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
+      output += tripletToBase64(temp);
+    }
+
+    // pad the end with zeros, but make sure to not forget the extra bytes
+    switch (extraBytes) {
+      case 1:
+        temp = uint8[uint8.length - 1];
+        output += lookup[temp >> 2];
+        output += lookup[(temp << 4) & 0x3F];
+        output += '==';
+        break;
+      case 2:
+        temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1]);
+        output += lookup[temp >> 10];
+        output += lookup[(temp >> 4) & 0x3F];
+        output += lookup[(temp << 2) & 0x3F];
+        output += '=';
+        break;
+    }
+
+    return output;
+  }
+
+  module.exports.toByteArray = b64ToByteArray;
+  module.exports.fromByteArray = uint8ToBase64;
 }());
 
 },{}],4:[function(require,module,exports){
@@ -83134,10 +83134,10 @@ var process=require("__browserify_process"),global=typeof self !== "undefined" ?
  */
 function IslandNode(body){
 
-    /**
-     * The body that is contained in this node.
-     * @property {Body} body
-     */
+  /**
+   * The body that is contained in this node.
+   * @property {Body} body
+   */
     this.body = body;
 
     /**
@@ -86717,7 +86717,7 @@ Phaser.Physics.P2.FixtureList.prototype = {
 Phaser.Physics.P2.PointProxy = function (world, destination) {
 
     this.world = world;
-    this.destination = destination;
+  this.destination = destination;
 
 };
 
@@ -86820,7 +86820,7 @@ Object.defineProperty(Phaser.Physics.P2.PointProxy.prototype, "my", {
 Phaser.Physics.P2.InversePointProxy = function (world, destination) {
 
     this.world = world;
-    this.destination = destination;
+  this.destination = destination;
 
 };
 
@@ -87919,10 +87919,10 @@ Phaser.Physics.P2.Body.prototype = {
     */
     removeShape: function (shape) {
 
-        var result = this.data.removeShape(shape);
-    
-        this.shapeChanged();
-    
+    var result = this.data.removeShape(shape);
+  
+    this.shapeChanged();
+  
         return result;
     },
 
@@ -89282,45 +89282,45 @@ Phaser.Physics.P2.Material.prototype.constructor = Phaser.Physics.P2.Material;
 */
 Phaser.Physics.P2.ContactMaterial = function (materialA, materialB, options) {
 
-    /**
-    * @property {number} id - The contact material identifier.
-    */
+  /**
+  * @property {number} id - The contact material identifier.
+  */
 
-    /**
-    * @property {Phaser.Physics.P2.Material} materialA - First material participating in the contact material.
-    */
+  /**
+  * @property {Phaser.Physics.P2.Material} materialA - First material participating in the contact material.
+  */
 
-    /**
-    * @property {Phaser.Physics.P2.Material} materialB - Second material participating in the contact material.
-    */
+  /**
+  * @property {Phaser.Physics.P2.Material} materialB - Second material participating in the contact material.
+  */
 
-    /**
-    * @property {number} [friction=0.3] - Friction to use in the contact of these two materials.
-    */
+  /**
+  * @property {number} [friction=0.3] - Friction to use in the contact of these two materials.
+  */
 
-    /**
-    * @property {number} [restitution=0.0] - Restitution to use in the contact of these two materials.
-    */
+  /**
+  * @property {number} [restitution=0.0] - Restitution to use in the contact of these two materials.
+  */
 
-    /**
-    * @property {number} [stiffness=1e7] - Stiffness of the resulting ContactEquation that this ContactMaterial generate.
-    */
+  /**
+  * @property {number} [stiffness=1e7] - Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+  */
 
-    /**
-    * @property {number} [relaxation=3] - Relaxation of the resulting ContactEquation that this ContactMaterial generate.
-    */
+  /**
+  * @property {number} [relaxation=3] - Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+  */
 
-    /**
-    * @property {number} [frictionStiffness=1e7] - Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
-    */
+  /**
+  * @property {number} [frictionStiffness=1e7] - Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+  */
 
-    /**
-    * @property {number} [frictionRelaxation=3] - Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
-    */
+  /**
+  * @property {number} [frictionRelaxation=3] - Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+  */
 
-    /**
-    * @property {number} [surfaceVelocity=0] - Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
-    */
+  /**
+  * @property {number} [surfaceVelocity=0] - Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+  */
 
     p2.ContactMaterial.call(this, materialA, materialB, options);
 
